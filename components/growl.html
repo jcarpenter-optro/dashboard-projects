@@ -1,109 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>growl: Luna Component Comparison</title>
-  
-<style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: #0f1117; color: #e2e8f0;
-  min-height: 100vh;
-}
-.topbar {
-  background: #171923; border-bottom: 1px solid #2d3148;
-  padding: 12px 28px; display: flex; align-items: center; gap: 16px;
-}
-.topbar a { color: #64748b; font-size: 13px; text-decoration: none; }
-.topbar a:hover { color: #e2e8f0; }
-.topbar .sep { color: #2d3148; }
-.topbar h1 { font-size: 15px; font-weight: 700; color: #f8fafc; font-family: "SF Mono","Fira Code",monospace; }
-.badge {
-  font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 600;
-}
-.badge-both    { background: #2e1065; color: #c4b5fd; }
-.badge-ember   { background: #431407; color: #fb923c; }
-.badge-react   { background: #082f49; color: #38bdf8; }
-.analysis {
-  margin: 20px 28px;
-  background: #1e2130; border: 1px solid #2d3148; border-radius: 10px;
-  padding: 16px 20px;
-}
-.analysis-label {
-  font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
-  color: #64748b; margin-bottom: 8px; font-weight: 600;
-}
-.analysis-text { font-size: 14px; line-height: 1.6; color: #94a3b8; }
-.analysis-text strong { color: #e2e8f0; }
-.columns {
-  display: grid; gap: 0;
-  margin: 0 28px 28px;
-}
-.columns.two-col { grid-template-columns: 1fr 1fr; gap: 16px; }
-.columns.one-col { grid-template-columns: 1fr; }
-.col-panel {
-  background: #1e2130; border: 1px solid #2d3148; border-radius: 10px;
-  overflow: hidden; display: flex; flex-direction: column;
-}
-.col-header {
-  padding: 10px 16px; border-bottom: 1px solid #2d3148;
-  display: flex; align-items: center; gap: 8px;
-  font-size: 12px; font-weight: 600;
-  background: #171923;
-}
-.col-header .filename {
-  font-family: "SF Mono","Fira Code",monospace;
-  color: #94a3b8; font-size: 11px; margin-left: auto;
-}
-.file-tab {
-  border-top: 1px solid #2d3148;
-  padding: 6px 16px;
-  font-size: 11px; font-family: "SF Mono","Fira Code",monospace;
-  color: #64748b; background: #171923;
-}
-.file-tab:first-child { border-top: none; }
-.empty-state {
-  display: flex; align-items: center; justify-content: center;
-  padding: 60px 20px; color: #374151; font-size: 13px;
-  flex: 1;
-}
-pre {
-  margin: 0; padding: 16px;
-  font-family: "SF Mono","Fira Code","Fira Mono",monospace;
-  font-size: 12px; line-height: 1.6;
-  overflow-x: auto; flex: 1;
-  background: transparent;
-}
-.nav-footer {
-  border-top: 1px solid #2d3148; padding: 16px 28px;
-  display: flex; justify-content: space-between; align-items: center;
-}
-.nav-btn {
-  font-size: 12px; padding: 6px 14px; border-radius: 6px;
-  border: 1px solid #2d3148; background: transparent;
-  color: #94a3b8; cursor: pointer; text-decoration: none;
-  transition: all 0.15s; display: inline-block;
-}
-.nav-btn:hover { background: #2d3148; color: #f8fafc; }
-</style>
-
-</head>
+<head><meta charset="UTF-8"><title>growl: Luna Component Comparison</title><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#0f1117;color:#e2e8f0;min-height:100vh}
+.topbar{background:#171923;border-bottom:1px solid #2d3148;padding:12px 28px;display:flex;align-items:center;gap:12px}
+.topbar a{color:#64748b;font-size:13px;text-decoration:none}.topbar a:hover{color:#e2e8f0}
+.topbar .sep{color:#2d3148}
+.topbar h1{font-size:15px;font-weight:700;color:#f8fafc;font-family:"SF Mono","Fira Code",monospace}
+.badge{font-size:11px;padding:2px 8px;border-radius:20px;font-weight:600}
+.badge-both{background:#2e1065;color:#c4b5fd}.badge-ember{background:#431407;color:#fb923c}.badge-react{background:#082f49;color:#38bdf8}
+.analysis{margin:20px 28px;background:#1e2130;border:1px solid #2d3148;border-radius:10px;padding:16px 20px}
+.analysis-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:8px;font-weight:600}
+.analysis-text{font-size:14px;line-height:1.6;color:#94a3b8}.analysis-text strong{color:#e2e8f0}
+.analysis-text code{font-family:"SF Mono","Fira Code",monospace;font-size:12px;background:#0f1117;padding:1px 5px;border-radius:3px;color:#a78bfa}
+.columns{display:grid;gap:16px;margin:0 28px 28px}
+.two-col{grid-template-columns:1fr 1fr}.one-col{grid-template-columns:1fr}
+.col-panel{background:#1e2130;border:1px solid #2d3148;border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.col-header{padding:10px 16px;border-bottom:1px solid #2d3148;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;background:#171923}
+.file-tab{border-top:1px solid #2d3148;padding:5px 16px;font-size:11px;font-family:"SF Mono","Fira Code",monospace;color:#64748b;background:#171923}
+.empty-state{display:flex;align-items:center;justify-content:center;padding:60px 20px;color:#374151;font-size:13px;flex:1}
+pre{margin:0;padding:16px;font-family:"SF Mono","Fira Code","Fira Mono",monospace;font-size:12px;line-height:1.6;overflow-x:auto;flex:1;background:transparent;white-space:pre-wrap;word-break:break-all}
+.nav-footer{border-top:1px solid #2d3148;padding:16px 28px;display:flex;justify-content:space-between;align-items:center}
+.nav-btn{font-size:12px;padding:6px 14px;border-radius:6px;border:1px solid #2d3148;background:transparent;color:#94a3b8;text-decoration:none;display:inline-block;transition:all .15s}
+.nav-btn:hover{background:#2d3148;color:#f8fafc}
+</style></head>
 <body>
-  <div class="topbar">
-    <a href="../index.html">← Dashboard</a>
-    <span class="sep">/</span>
-    <h1>growl</h1>
-    <span class="badge badge-react">React only</span>
-  </div>
+<div class="topbar">
+  <a href="../index.html">← Dashboard</a><span class="sep">/</span>
+  <h1>growl</h1><span class="badge badge-both">Both</span>
+</div>
+<div class="analysis" style="margin-top:20px">
+  <div class="analysis-label">Analysis</div>
+  <div class="analysis-text">Both libraries have a growl/notification component. In Ember it is exported as <strong>SetupGrowl</strong> from <code>setup/growl.gts</code>. In React it lives at <code>components/growl/</code>. Same concept, different naming convention.</div>
+</div>
+<div class="columns two-col">
+  <div class="col-panel"><div class="col-header"><span style="color:#f97316">●</span> Ember (Glimmer)</div><div class="file-tab">growl.gts</div><pre>import { service } from &#x27;@ember/service&#x27;;
+import Component from &#x27;@glimmer/component&#x27;;
 
-  <div class="analysis" style="margin-top:20px">
-    <div class="analysis-label">Analysis</div>
-    <div class="analysis-text"><strong>growl</strong> exists only in the React library. It has not yet been ported to Ember/Glimmer and may represent a newer pattern being introduced via the React migration.</div>
-  </div>
+import type GrowlService from &#x27;../../services/growl.ts&#x27;;
+import type { Growl as GrowlComponent } from &#x27;../../services/growl.ts&#x27;;
 
-  <div class="columns one-col">
-<div class="col-panel"><div class="col-header"><span style="color:#38bdf8">●</span> React (TSX)</div><div class="file-tab">growl-context.tsx</div><pre class="language-typescript">import { createContext, type ReactNode, useCallback, useContext, useMemo } from &#x27;react&#x27;;
+interface Signature {
+	Element: HTMLElement;
+	Args: NonNullable&lt;unknown&gt;;
+}
+
+export default class Growl extends Component&lt;Signature&gt; {
+	@service(&#x27;luna/growl&#x27;) declare growl: GrowlService;
+
+	get growls(): GrowlComponent[] {
+		return this.growl.allGrowls;
+	}
+
+	&lt;template&gt;
+		&lt;div class=&quot;Growls&quot; id=&quot;luna-growls&quot;&gt;
+			{{#each this.growls as |growl|}}
+				&lt;growl.component @data={{growl.data}} /&gt;
+			{{/each}}
+		&lt;/div&gt;
+	&lt;/template&gt;
+}
+</pre></div>
+  <div class="col-panel"><div class="col-header"><span style="color:#38bdf8">●</span> React (TSX)</div><div class="file-tab">growl-context.tsx</div><pre>import { createContext, type ReactNode, useCallback, useContext, useMemo } from &#x27;react&#x27;;
 
 import { Toast } from &#x27;@base-ui-components/react/toast&#x27;;
 
@@ -342,7 +300,7 @@ export function useGrowl(): GrowlContextValue {
 export function useGrowlOptional(): GrowlContextValue | null {
 	return useContext(GrowlContext);
 }
-</pre><div class="file-tab">growl-item.tsx</div><pre class="language-typescript">import { Toast } from &#x27;@base-ui-components/react/toast&#x27;;
+</pre><div class="file-tab">growl-item.tsx</div><pre>import { Toast } from &#x27;@base-ui-components/react/toast&#x27;;
 
 import { cn } from &#x27;../../utils/cn&#x27;;
 import { Heading } from &#x27;../heading&#x27;;
@@ -440,125 +398,7 @@ export function GrowlItem(props: GrowlItemProps) {
 }
 
 export default GrowlItem;
-</pre><div class="file-tab">growl-viewport.tsx</div><pre class="language-typescript">/**
- * Viewport that renders growl notifications. Structure is intentional:
- * GrowlProvider (context) holds API; GrowlViewport renders the toast list;
- * GrowlItem is the default UI. No duplicated logic—ToastData here is the
- * toast payload shape from Base UI.
- */
-import { useMemo } from &#x27;react&#x27;;
-
-import { Toast } from &#x27;@base-ui-components/react/toast&#x27;;
-
-import { cn } from &#x27;../../utils/cn&#x27;;
-
-import type { GrowlComponent, GrowlData } from &#x27;./growl-context&#x27;;
-
-import styles from &#x27;./growl.module.css&#x27;;
-
-export interface GrowlViewportProps extends React.HTMLAttributes&lt;HTMLDivElement&gt; {
-	/** Optional ref for the underlying element (React 19 ref-as-prop) */
-	ref?: React.Ref&lt;HTMLDivElement&gt;;
-	/** Additional CSS class */
-	className?: string;
-}
-
-interface ToastData {
-	Component: GrowlComponent;
-	close: () =&gt; void;
-	header: string;
-	isTrusted: boolean;
-	message: string;
-	sticky: boolean;
-	uuid?: string;
-	type: string;
-}
-
-interface GrowlToastItemProps {
-	toast: ReturnType&lt;typeof Toast.useToastManager&gt;[&#x27;toasts&#x27;][number];
-	onClose: (id: string) =&gt; void;
-}
-
-/**
- * Individual growl toast item - extracted to follow React hooks rules
- */
-function GrowlToastItem({ toast, onClose }: GrowlToastItemProps) {
-	const data = toast.data as ToastData | undefined;
-	const Component = data?.Component;
-
-	const growlData: GrowlData = useMemo(
-		() =&gt; ({
-			close: () =&gt; onClose(toast.id),
-			header: data?.header ?? &#x27;&#x27;,
-			isTrusted: data?.isTrusted ?? false,
-			message: data?.message ?? &#x27;&#x27;,
-			sticky: data?.sticky ?? false,
-			uuid: data?.uuid,
-			type: (data?.type as GrowlData[&#x27;type&#x27;]) ?? &#x27;info&#x27;,
-		}),
-		[toast.id, data, onClose],
-	);
-
-	if (!Component) {
-		return null;
-	}
-
-	return (
-		&lt;Toast.Root
-			key={toast.id}
-			toast={toast}
-			className={styles.Root}
-			data-type={growlData.type}
-			data-qid={growlData.uuid}
-		&gt;
-			&lt;Toast.Content className={styles.Content}&gt;
-				&lt;Component data={growlData} /&gt;
-			&lt;/Toast.Content&gt;
-		&lt;/Toast.Root&gt;
-	);
-}
-
-/**
- * Viewport that renders growl notifications.
- * Should be placed inside a GrowlProvider, typically at the app root.
- *
- * Renders in the top-right corner of the screen.
- *
- * @example
- * ```tsx
- * &lt;GrowlProvider&gt;
- *   &lt;App /&gt;
- *   &lt;GrowlViewport /&gt;
- * &lt;/GrowlProvider&gt;
- * ```
- */
-export function GrowlViewport(props: GrowlViewportProps) {
-	const { ref, className, ...rest } = props;
-	const toastManager = Toast.useToastManager();
-
-	return (
-		&lt;Toast.Portal&gt;
-			&lt;Toast.Viewport
-				ref={ref}
-				className={cn(styles.Viewport, className)}
-				data-qid-component-type=&quot;Luna::Growl::Viewport&quot;
-				{...rest}
-			&gt;
-				{toastManager.toasts.map((toast) =&gt; (
-					&lt;GrowlToastItem key={toast.id} toast={toast} onClose={toastManager.close} /&gt;
-				))}
-			&lt;/Toast.Viewport&gt;
-		&lt;/Toast.Portal&gt;
-	);
-}
-
-export default GrowlViewport;
-</pre></div>  </div>
-
-  <div class="nav-footer">
-    <a href="frame.html" class="nav-btn">← frame</a>
-    <a href="../index.html" class="nav-btn">All Components</a>
-    <a href="heading.html" class="nav-btn">heading →</a>
-  </div>
-</body>
-</html>
+</pre></div>
+</div>
+<div class="nav-footer"><a href="frame.html" class="nav-btn">← frame</a><a href="../index.html" class="nav-btn">All Components</a><a href="heading.html" class="nav-btn">heading →</a></div>
+</body></html>

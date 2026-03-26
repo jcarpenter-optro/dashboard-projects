@@ -1,109 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>chart: Luna Component Comparison</title>
-  
-<style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: #0f1117; color: #e2e8f0;
-  min-height: 100vh;
-}
-.topbar {
-  background: #171923; border-bottom: 1px solid #2d3148;
-  padding: 12px 28px; display: flex; align-items: center; gap: 16px;
-}
-.topbar a { color: #64748b; font-size: 13px; text-decoration: none; }
-.topbar a:hover { color: #e2e8f0; }
-.topbar .sep { color: #2d3148; }
-.topbar h1 { font-size: 15px; font-weight: 700; color: #f8fafc; font-family: "SF Mono","Fira Code",monospace; }
-.badge {
-  font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 600;
-}
-.badge-both    { background: #2e1065; color: #c4b5fd; }
-.badge-ember   { background: #431407; color: #fb923c; }
-.badge-react   { background: #082f49; color: #38bdf8; }
-.analysis {
-  margin: 20px 28px;
-  background: #1e2130; border: 1px solid #2d3148; border-radius: 10px;
-  padding: 16px 20px;
-}
-.analysis-label {
-  font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
-  color: #64748b; margin-bottom: 8px; font-weight: 600;
-}
-.analysis-text { font-size: 14px; line-height: 1.6; color: #94a3b8; }
-.analysis-text strong { color: #e2e8f0; }
-.columns {
-  display: grid; gap: 0;
-  margin: 0 28px 28px;
-}
-.columns.two-col { grid-template-columns: 1fr 1fr; gap: 16px; }
-.columns.one-col { grid-template-columns: 1fr; }
-.col-panel {
-  background: #1e2130; border: 1px solid #2d3148; border-radius: 10px;
-  overflow: hidden; display: flex; flex-direction: column;
-}
-.col-header {
-  padding: 10px 16px; border-bottom: 1px solid #2d3148;
-  display: flex; align-items: center; gap: 8px;
-  font-size: 12px; font-weight: 600;
-  background: #171923;
-}
-.col-header .filename {
-  font-family: "SF Mono","Fira Code",monospace;
-  color: #94a3b8; font-size: 11px; margin-left: auto;
-}
-.file-tab {
-  border-top: 1px solid #2d3148;
-  padding: 6px 16px;
-  font-size: 11px; font-family: "SF Mono","Fira Code",monospace;
-  color: #64748b; background: #171923;
-}
-.file-tab:first-child { border-top: none; }
-.empty-state {
-  display: flex; align-items: center; justify-content: center;
-  padding: 60px 20px; color: #374151; font-size: 13px;
-  flex: 1;
-}
-pre {
-  margin: 0; padding: 16px;
-  font-family: "SF Mono","Fira Code","Fira Mono",monospace;
-  font-size: 12px; line-height: 1.6;
-  overflow-x: auto; flex: 1;
-  background: transparent;
-}
-.nav-footer {
-  border-top: 1px solid #2d3148; padding: 16px 28px;
-  display: flex; justify-content: space-between; align-items: center;
-}
-.nav-btn {
-  font-size: 12px; padding: 6px 14px; border-radius: 6px;
-  border: 1px solid #2d3148; background: transparent;
-  color: #94a3b8; cursor: pointer; text-decoration: none;
-  transition: all 0.15s; display: inline-block;
-}
-.nav-btn:hover { background: #2d3148; color: #f8fafc; }
-</style>
-
-</head>
+<head><meta charset="UTF-8"><title>chart: Luna Component Comparison</title><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#0f1117;color:#e2e8f0;min-height:100vh}
+.topbar{background:#171923;border-bottom:1px solid #2d3148;padding:12px 28px;display:flex;align-items:center;gap:12px}
+.topbar a{color:#64748b;font-size:13px;text-decoration:none}.topbar a:hover{color:#e2e8f0}
+.topbar .sep{color:#2d3148}
+.topbar h1{font-size:15px;font-weight:700;color:#f8fafc;font-family:"SF Mono","Fira Code",monospace}
+.badge{font-size:11px;padding:2px 8px;border-radius:20px;font-weight:600}
+.badge-both{background:#2e1065;color:#c4b5fd}.badge-ember{background:#431407;color:#fb923c}.badge-react{background:#082f49;color:#38bdf8}
+.analysis{margin:20px 28px;background:#1e2130;border:1px solid #2d3148;border-radius:10px;padding:16px 20px}
+.analysis-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:8px;font-weight:600}
+.analysis-text{font-size:14px;line-height:1.6;color:#94a3b8}.analysis-text strong{color:#e2e8f0}
+.analysis-text code{font-family:"SF Mono","Fira Code",monospace;font-size:12px;background:#0f1117;padding:1px 5px;border-radius:3px;color:#a78bfa}
+.columns{display:grid;gap:16px;margin:0 28px 28px}
+.two-col{grid-template-columns:1fr 1fr}.one-col{grid-template-columns:1fr}
+.col-panel{background:#1e2130;border:1px solid #2d3148;border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.col-header{padding:10px 16px;border-bottom:1px solid #2d3148;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;background:#171923}
+.file-tab{border-top:1px solid #2d3148;padding:5px 16px;font-size:11px;font-family:"SF Mono","Fira Code",monospace;color:#64748b;background:#171923}
+.empty-state{display:flex;align-items:center;justify-content:center;padding:60px 20px;color:#374151;font-size:13px;flex:1}
+pre{margin:0;padding:16px;font-family:"SF Mono","Fira Code","Fira Mono",monospace;font-size:12px;line-height:1.6;overflow-x:auto;flex:1;background:transparent;white-space:pre-wrap;word-break:break-all}
+.nav-footer{border-top:1px solid #2d3148;padding:16px 28px;display:flex;justify-content:space-between;align-items:center}
+.nav-btn{font-size:12px;padding:6px 14px;border-radius:6px;border:1px solid #2d3148;background:transparent;color:#94a3b8;text-decoration:none;display:inline-block;transition:all .15s}
+.nav-btn:hover{background:#2d3148;color:#f8fafc}
+</style></head>
 <body>
-  <div class="topbar">
-    <a href="../index.html">← Dashboard</a>
-    <span class="sep">/</span>
-    <h1>chart</h1>
-    <span class="badge badge-both">Both</span>
-  </div>
-
-  <div class="analysis" style="margin-top:20px">
-    <div class="analysis-label">Analysis</div>
-    <div class="analysis-text">Both <strong>chart</strong> implementations exist. The Ember version is 188 lines and the React version is 536 lines. The React version is notably larger (536 vs 188 lines), suggesting additional complexity or a differing approach. Both versions share the same component name and purpose, though API surface may differ between Glimmer named arguments and React props. React includes a co-located test file.</div>
-  </div>
-
-  <div class="columns two-col">
-<div class="col-panel"><div class="col-header"><span style="color:#f97316">●</span> Ember (Glimmer)</div><div class="file-tab">chart.gts</div><pre class="language-typescript">import type {
+<div class="topbar">
+  <a href="../index.html">← Dashboard</a><span class="sep">/</span>
+  <h1>chart</h1><span class="badge badge-react">React only</span>
+</div>
+<div class="analysis" style="margin-top:20px">
+  <div class="analysis-label">Analysis</div>
+  <div class="analysis-text">Both libraries implement <strong>chart</strong>. Note: exported as <strong>chart</strong> in Ember and <strong>BarChart</strong> in React. Ember: 188 lines. React: 381 lines. The React version is notably larger (381 vs 188 lines), suggesting a broader API or differing implementation approach. API surface may differ between Glimmer named arguments and React props — check exports for full parity.</div>
+</div>
+<div class="columns two-col">
+  <div class="col-panel"><div class="col-header"><span style="color:#f97316">●</span> Ember (Glimmer)</div><div class="file-tab">chart.gts</div><pre>import type {
 	AgChartCaptionOptions,
 	AgChartInstance,
 	AgChartLegendOptions,
@@ -291,7 +222,8 @@ export default class Chart extends Component&lt;LunaChartSignature&gt; {
 		{{yield this._chart}}
 	&lt;/template&gt;
 }
-</pre></div><div class="col-panel"><div class="col-header"><span style="color:#38bdf8">●</span> React (TSX)</div><div class="file-tab">bar-chart.tsx</div><pre class="language-typescript">import type {
+</pre></div>
+  <div class="col-panel"><div class="col-header"><span style="color:#38bdf8">●</span> React (TSX)</div><div class="file-tab">bar-chart.tsx</div><pre>import type {
 	AgAxisConfig,
 	AxisOptionsUnion,
 	BarChartConfig,
@@ -414,7 +346,7 @@ export function BarChart({ data = [], config, className }: BarChartProps): React
 		/&gt;
 	);
 }
-</pre><div class="file-tab">chart.tsx</div><pre class="language-typescript">import { useCallback, useEffect, useId, useRef } from &#x27;react&#x27;;
+</pre><div class="file-tab">chart.tsx</div><pre>import { useCallback, useEffect, useId, useRef } from &#x27;react&#x27;;
 
 import type {
 	AgChartCaptionOptions,
@@ -672,167 +604,7 @@ export function Chart(props: ChartProps) {
 }
 
 export default Chart;
-</pre><div class="file-tab">donut-chart.tsx</div><pre class="language-typescript">import type { DonutChartConfig } from &#x27;@soxhub/luna-charts&#x27;;
-import { buildDonutSeriesConfig } from &#x27;@soxhub/luna-charts&#x27;;
-import type { AgChartOptions } from &#x27;ag-charts-community&#x27;;
-
-import { Chart } from &#x27;./chart&#x27;;
-
-const MIN_WIDTH = 300;
-const MIN_HEIGHT = 200;
-
-export interface DonutChartProps {
-	/** Chart data */
-	data?: unknown[];
-	/** Donut chart configuration */
-	config: DonutChartConfig;
-	/** Additional CSS class */
-	className?: string;
-}
-
-export function DonutChart({ data = [], config, className }: DonutChartProps): React.ReactElement {
-	const series = buildDonutSeriesConfig(config);
-	const legend = typeof config.showLegend === &#x27;boolean&#x27; &amp;&amp; !config.showLegend ? { enabled: false } : config.legend;
-
-	return (
-		&lt;Chart
-			type=&quot;donut&quot;
-			data={data}
-			series={series as AgChartOptions[&#x27;series&#x27;]}
-			legend={legend}
-			minWidth={config.minWidth ?? MIN_WIDTH}
-			minHeight={config.minHeight ?? MIN_HEIGHT}
-			padding={config.padding}
-			width={config.width}
-			height={config.height}
-			className={className}
-		/&gt;
-	);
-}
-</pre><div class="file-tab">line-chart.tsx</div><pre class="language-typescript">import type {
-	AgAxisConfig,
-	AgAxisUnion,
-	LineChartConfig,
-	NumberAxisOptions,
-	TimeAxisOptions,
-} from &#x27;@soxhub/luna-charts&#x27;;
-import { buildLineSeriesConfig, buildNumberAxisConfig, buildTimeAxisConfig } from &#x27;@soxhub/luna-charts&#x27;;
-import type { AgChartOptions } from &#x27;ag-charts-community&#x27;;
-
-import { Chart } from &#x27;./chart&#x27;;
-
-const DIMENSIONS: Record&lt;&#x27;grid&#x27; | &#x27;default&#x27;, { minWidth: number; minHeight: number }&gt; = {
-	default: { minWidth: 300, minHeight: 200 },
-	grid: { minWidth: 400, minHeight: 300 },
-};
-
-export interface LineChartProps {
-	/** Chart data */
-	data?: unknown[];
-	/** Line chart configuration */
-	config: LineChartConfig;
-	/** Additional CSS class */
-	className?: string;
-}
-
-function getLineChartAxes(config: LineChartConfig): AgAxisConfig | undefined {
-	const axesConfig = config.axes ?? {};
-	const layout = config.layout ?? &#x27;default&#x27;;
-
-	const buildAxis = (options: unknown): AgAxisUnion | undefined =&gt; {
-		if (!options) return undefined;
-		const typed = options as Record&lt;string, unknown&gt; &amp; { type?: string };
-		const type = typed.type?.toLowerCase();
-		const configWithLayout = { ...typed, layout };
-
-		if (type === &#x27;number&#x27;) {
-			return buildNumberAxisConfig({
-				direction: &#x27;horizontal&#x27;,
-				position: &#x27;left&#x27;,
-				...configWithLayout,
-			} as NumberAxisOptions) as AgAxisUnion;
-		}
-		if (type === &#x27;time&#x27;) {
-			return buildTimeAxisConfig({
-				direction: &#x27;horizontal&#x27;,
-				position: &#x27;bottom&#x27;,
-				...configWithLayout,
-			} as TimeAxisOptions) as AgAxisUnion;
-		}
-		return undefined;
-	};
-
-	const result: AgAxisConfig = {};
-	if (axesConfig.y) result.y = buildAxis(axesConfig.y);
-	if (axesConfig.x) result.x = buildAxis(axesConfig.x);
-	return Object.keys(result).length &gt; 0 ? result : undefined;
-}
-
-export function LineChart({ data = [], config, className }: LineChartProps): React.ReactElement {
-	const series = buildLineSeriesConfig(config);
-	const axes = getLineChartAxes(config);
-	const layout = config.layout ?? &#x27;default&#x27;;
-	const legend = typeof config.showLegend === &#x27;boolean&#x27; &amp;&amp; !config.showLegend ? { enabled: false } : config.legend;
-
-	return (
-		&lt;Chart
-			type=&quot;line&quot;
-			data={data}
-			series={series as AgChartOptions[&#x27;series&#x27;]}
-			axes={axes as unknown}
-			legend={legend}
-			minWidth={config.minWidth ?? DIMENSIONS[layout].minWidth}
-			minHeight={config.minHeight ?? DIMENSIONS[layout].minHeight}
-			padding={config.padding}
-			width={config.width}
-			height={config.height}
-			className={className}
-		/&gt;
-	);
-}
-</pre><div class="file-tab">pie-chart.tsx</div><pre class="language-typescript">import type { PieChartConfig } from &#x27;@soxhub/luna-charts&#x27;;
-import { buildPieSeriesConfig } from &#x27;@soxhub/luna-charts&#x27;;
-import type { AgChartOptions } from &#x27;ag-charts-community&#x27;;
-
-import { Chart } from &#x27;./chart&#x27;;
-
-const MIN_WIDTH = 300;
-const MIN_HEIGHT = 200;
-
-export interface PieChartProps {
-	/** Chart data */
-	data?: unknown[];
-	/** Pie chart configuration */
-	config: PieChartConfig;
-	/** Additional CSS class */
-	className?: string;
-}
-
-export function PieChart({ data = [], config, className }: PieChartProps): React.ReactElement {
-	const series = buildPieSeriesConfig(config);
-	const legend = typeof config.showLegend === &#x27;boolean&#x27; &amp;&amp; !config.showLegend ? { enabled: false } : config.legend;
-
-	return (
-		&lt;Chart
-			type=&quot;pie&quot;
-			data={data}
-			series={series as AgChartOptions[&#x27;series&#x27;]}
-			legend={legend}
-			minWidth={config.minWidth ?? MIN_WIDTH}
-			minHeight={config.minHeight ?? MIN_HEIGHT}
-			padding={config.padding}
-			width={config.width}
-			height={config.height}
-			className={className}
-		/&gt;
-	);
-}
-</pre></div>  </div>
-
-  <div class="nav-footer">
-    <a href="calendar.html" class="nav-btn">← calendar</a>
-    <a href="../index.html" class="nav-btn">All Components</a>
-    <a href="checkbox.html" class="nav-btn">checkbox →</a>
-  </div>
-</body>
-</html>
+</pre></div>
+</div>
+<div class="nav-footer"><a href="calendar.html" class="nav-btn">← calendar</a><a href="../index.html" class="nav-btn">All Components</a><a href="checkbox.html" class="nav-btn">checkbox →</a></div>
+</body></html>
