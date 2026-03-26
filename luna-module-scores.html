@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luna Token Adoption — Module Scores</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #0f1117; color: #e2e8f0; padding: 32px; min-height: 100vh; }
+h1 { font-size: 24px; font-weight: 700; color: #f8fafc; margin-bottom: 4px; }
+.subtitle { color: #64748b; font-size: 13px; margin-bottom: 32px; }
+.stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 32px; }
+.stat-card { background: #1e2130; border: 1px solid #2d3148; border-radius: 10px; padding: 20px; }
+.stat-card .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; margin-bottom: 8px; }
+.stat-card .value { font-size: 32px; font-weight: 700; line-height: 1; }
+.stat-card .sub { font-size: 11px; color: #64748b; margin-top: 6px; }
+.callouts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+.callout { border-radius: 10px; padding: 16px 20px; border-left: 3px solid; display: flex; gap: 14px; align-items: flex-start; }
+.callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.callout-body .callout-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+.callout-body .callout-text { font-size: 13px; line-height: 1.5; color: #94a3b8; }
+.callout-body .callout-text strong { color: #e2e8f0; }
+.callout-info { background: #0f1f3d; border-color: #38bdf8; }
+.callout-info .callout-title { color: #38bdf8; }
+.callout-warn { background: #1c1407; border-color: #fbbf24; }
+.callout-warn .callout-title { color: #fbbf24; }
+.callout-success { background: #052e16; border-color: #34d399; }
+.callout-success .callout-title { color: #34d399; }
+.callout-danger { background: #1f0a0a; border-color: #f87171; }
+.callout-danger .callout-title { color: #f87171; }
+.panel { background: #1e2130; border: 1px solid #2d3148; border-radius: 10px; overflow: hidden; margin-bottom: 24px; }
+.panel-header { padding: 14px 20px; border-bottom: 1px solid #2d3148; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; }
+.pill { font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 600; }
+.pill-count { background: #1e293b; color: #94a3b8; margin-left: auto; }
+.filter-bar { display: flex; gap: 8px; padding: 12px 16px; border-bottom: 1px solid #2d3148; }
+.filter-btn { font-size: 11px; padding: 4px 12px; border-radius: 20px; border: 1px solid #2d3148; background: transparent; color: #94a3b8; cursor: pointer; transition: all 0.15s; }
+.filter-btn:hover, .filter-btn.active { background: #2d3148; color: #f8fafc; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th { padding: 10px 16px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #64748b; font-weight: 600; border-bottom: 1px solid #2d3148; background: #171923; }
+tbody tr { border-bottom: 1px solid #1a1f2e; transition: background 0.1s; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: #252a3d; }
+td { padding: 9px 16px; vertical-align: middle; }
+.bar-wrap { width: 100%; height: 6px; background: #1a1f2e; border-radius: 3px; overflow: hidden; margin-bottom: 8px; }
+.bar-fill { height: 100%; display: flex; }
+.legend { display: flex; gap: 20px; margin-bottom: 32px; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #94a3b8; }
+.legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+.section-title { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+
+<h1>Luna Token Adoption — Module Scores</h1>
+<p class="subtitle">Generated Mar 26, 2026 at 5:02 PM · Scans CSS/SCSS for hardcoded values matching Luna design tokens · Score = token usages / (token usages + violations)</p>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="label">Overall Score</div>
+    <div class="value" style="color:#fb923c;">46%</div>
+    <div class="sub">across 11 modules</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Total Violations</div>
+    <div class="value" style="color:#f87171;">235</div>
+    <div class="sub">hardcoded token values</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Token Usages</div>
+    <div class="value" style="color:#34d399;">200</div>
+    <div class="sub">var(--luna-*) references</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">CSS Files</div>
+    <div class="value" style="color:#94a3b8;">196</div>
+    <div class="sub">scanned across modules</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Token Values Indexed</div>
+    <div class="value" style="color:#c4b5fd;">134</div>
+    <div class="sub">Luna values in map</div>
+  </div>
+</div>
+
+<div class="section-title">Violation breakdown by category</div>
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#fbbf24;"></div>Space/Size (235)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#f87171;"></div>Color (0)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#c4b5fd;"></div>Radius (0)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#38bdf8;"></div>Typography (0)</div>
+</div>
+<div class="bar-wrap" style="height:10px;margin-bottom:32px;">
+  <div class="bar-fill">
+    <div style="width:100%;background:#fbbf24;"></div>
+    <div style="width:0%;background:#f87171;"></div>
+    <div style="width:0%;background:#c4b5fd;"></div>
+    <div style="width:0%;background:#38bdf8;"></div>
+  </div>
+</div>
+
+<div class="callouts">
+  <div class="callout callout-info">
+    <div class="callout-icon">📐</div>
+    <div class="callout-body">
+      <div class="callout-title">Scoring methodology</div>
+      <div class="callout-text">Score = <strong>token usages / (token usages + violations)</strong>. Only property declarations in token-relevant categories are scanned: spacing properties for space/size tokens, color properties for hex colors, border-radius for radius tokens, and font-size for typography. Values like <code>0</code> are only flagged in spacing/radius context — not in z-index or opacity.</div>
+    </div>
+  </div>
+  <div class="callout callout-warn">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-body">
+      <div class="callout-title">Space tokens dominate violations</div>
+      <div class="callout-text">Space/size violations account for <strong>100%</strong> of all violations. Values like <strong>0, 1rem, 0.5rem</strong> in margin/padding/gap should use <strong>var(--luna-space-*)</strong> equivalents. This single category is the highest-impact migration target.</div>
+    </div>
+  </div>
+  <div class="callout callout-success">
+    <div class="callout-icon">✅</div>
+    <div class="callout-body">
+      <div class="callout-title">Best performing: admin</div>
+      <div class="callout-text">Leads with <strong>100%</strong> across no CSS files — may use inline styles in templates. It has <strong>0</strong> violations and <strong>0</strong> token usages.</div>
+    </div>
+  </div>
+  <div class="callout callout-danger">
+    <div class="callout-icon">🔴</div>
+    <div class="callout-body">
+      <div class="callout-title">Most violations: compliance</div>
+      <div class="callout-text"><strong>85</strong> violations across <strong>67</strong> CSS files (score: <strong>49%</strong>, grade: D). Space token adoption is the primary gap.</div>
+    </div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-header">
+    Module Leaderboard
+    <span class="pill pill-count">11 modules</span>
+  </div>
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterTable('all',this)">All</button>
+    <button class="filter-btn" onclick="filterTable('good',this)">Good (80%+)</button>
+    <button class="filter-btn" onclick="filterTable('fair',this)">Fair (50–79%)</button>
+    <button class="filter-btn" onclick="filterTable('poor',this)">Needs Work (&lt;50%)</button>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:36px;text-align:center;">#</th>
+        <th>Module</th>
+        <th style="text-align:center;">CSS Files</th>
+        <th style="text-align:right;">Violations</th>
+        <th style="text-align:right;">Token Uses</th>
+        <th style="min-width:200px;">Score</th>
+        <th style="text-align:center;">Grade</th>
+        <th>Top Violations</th>
+      </tr>
+    </thead>
+    <tbody>
+
+    <tr data-score="good">
+      <td style="color:#64748b;font-size:12px;text-align:center;">1</td>
+      <td>
+        <div style="font-weight:600;color:#f8fafc;font-size:13px;">admin</div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px;">Admin panel</div>
+      </td>
+      <td style="font-size:12px;color:#94a3b8;text-align:center;">0</td>
+      <td style="color:#f87171;font-size:13px;font-weight:600;text-align:right;">0</td>
+      <td style="color:#34d399;font-size:13px;text-align:right;">0</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="flex:1;height:8px;background:#1a1f2e;border-radius:4px;overflow:hidden;min-width:80px;"><div style="height:100%;width:100%;background:#34d399;border-radius:4px;"></div></div>
+          <span style="font-size:14px;font-weight:700;color:#34d399;min-width:38px;">100%</span>
+        </div>
+      </td>
+      <td style="text-align:center;"><span style="font-size:14px;font-weight:800;color:#34d399;">A</span></td>
+      <td><span style="color:#475569;font-size:11px;">none</span></td>
+    </tr>
+
+    <tr data-score="good">
+      <td style="color:#64748b;font-size:12px;text-align:center;">2</td>
+      <td>
+        <div style="font-weight:600;color:#f8fafc;font-size:13px;">opsaudits</div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px;">Operational audits</div>
+      </td>
+      <td style="font-size:12px;color:#94a3b8;text-align:center;">6</td>
+      <td style="color:#f87171;font-size:13px;font-weight:600;text-align:right;">0</td>
+      <td style="color:#34d399;font-size:13px;text-align:right;">0</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="flex:1;height:8px;background:#1a1f2e;border-radius:4px;overflow:hidden;min-width:80px;"><div style="height:100%;width:100%;background:#34d399;border-radius:4px;"></div></div>
+          <span style="font-size:14px;font-weight:700;color:#34d399;min-width:38px;">100%</span>
+        </div>
+      </td>
+      <td style="text-align:center;"><span style="font-size:14px;font-weight:800;color:#34d399;">A</span></td>
+      <td><span style="color:#475569;font-size:11px;">none</span></td>
+    </tr>
+
+    <tr data-score="fair">
+      <td style="color:#64748b;font-size:12px;text-align:center;">3</td>
+      <td>
+        <div style="font-weight:600;color:#f8fafc;font-size:13px;">tasks</div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px;">Task management</div>
+      </td>
+      <td style="font-size:12px;color:#94a3b8;text-align:center;">21</td>
+      <td style="color:#f87171;font-size:13px;font-weight:600;text-align:right;">28</td>
+      <td style="color:#34d399;font-size:13px;text-align:right;">49</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="flex:1;height:8px;background:#1a1f2e;border-radius:4px;overflow:hidden;min-width:80px;"><div style="height:100%;width:64%;background:#fbbf24;border-radius:4px;"></div></div>
+          <span style="font-size:14px;font-weight:700;color:#fbbf24;min-width:38px;">64%</span>
+        </div>
+      </td>
+      <td style="text-align:center;"><span style="font-size:14px;font-weight:800;color:#fbbf24;">C</span></td>
+      <td><span style="color:#fbbf24;font-size:11px;">Space: 28</span></td>
+    </tr>
+
+    <tr data-score="fair">
+      <td style="color:#64748b;font-size:12px;text-align:center;">4</td>
+      <td>
+        <div style="font-weight:600;color:#f8fafc;font-size:13px;">hubs</div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px;">Hubs</div>
+      </td>
+      <td style="font-size:12px;color:#94a3b8;text-align:center;">3</td>
+      <td style="color:#f87171;font-size:13px;font-weight:600;text-align:right;">3</td>
+      <td style="color:#34d399;font-size:13px;text-align:right;">5</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="flex:1;height:8px;background:#1a1f2e;border-radius:4px;overflow:hidden;min-width:80px;"><div style="height:100%;width:62%;background:#fbbf24;border-radius:4px;"></div></div>
+          <span style="font-size:14px;font-weight:700;color:#fbbf24;min-width:38px;">62%</span>
+        </div>
+      </td>
+      <td style="text-align:center;"><span style="font-size:14px;font-weight:800;color:#fbbf24;">C</span></td>
+      <td><span style="color:#fbbf24;font-size:11px;">Space: 3</span></td>
+    </tr>
+
+    <tr data-score="fair">
+      <td style="color:#64748b;font-size:12px;text-align:center;">5</td>
+      <td>
+        <div style="font-weight:600;color:#f8fafc;font-size:13px;">owner-dashboard</div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px;">Owner dashboard</div>
+      </td>
+      <td style="font-size:12px;color:#94a3b8;text-align:center;">10</td>
+      <td style="color:#f87171;font-size:13px;font-weight:600;text-align:right;">7</td>
+      <td style="color:#34d399;font-size:13px;text-align:right;">10</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="flex:1;height:8px;background:#1a1f2e;border-radius:4px;overflow:hidden;min-width:80px;"><div style="height:100%;width:59%;background:#fbbf24;border-radius:4px;"></div></div>
+          <span style="font-size:14px;font-weight:700;color:#fbbf24;min-width:38px;">59%</span>
+        </div>
+      </td>
+      <td style="text-align:center;"><span style="font-size:14px;font-weight:800;color:#fbbf24;">C</span></td>
+      <td><span style="color:#fbbf24;font-size:11px;">Space: 7</span></td>
+    </tr>
+
+    <tr data-score="poor">
+      <td style="color:#64748b;font-size:12px;text-align:center;">6</td>
+      <td>
+        <div style="font-weight:600;color:#f8fafc;font-size:13px;">compliance</div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px;">Compliance management</div>
+      </td>
+      <td style="font-size:12px;color:#94a3b8;text-align:center;">67</td>
+      <td style="color:#f87171;font-size:13px;font-weight:600;text-align:right;">85</td>
+      <td style="color:#34d399;font-size:13px;text-align:right;">81</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="flex:1;height:8px;background:#1a1f2e;border-radius:4px;overflow:hidden;min-width:80px;"><div style="height:100%;width:49%;background:#fb923c;border-radius:4px;"></div></div>
+          <span style="font-size:14px;font-weight:700;color:#fb923c;min-width:38px;">49%</span>
+        </div>
+      </td>
+      <td style="text-align:center;"><span style="font-size:14px;font-weight:800;color:#fb923c;">D</span></td>
+      <td><span style="color:#fbbf24;font-size:11px;">Space: 85</span></td>
+    </tr>
+
+    <tr data-score="poor">
+      <td style="color:#64748b;font-size:12px;text-align:center;">7</td>
+      <td>
+        <div style="font-weight:600;color:#f8fafc;font-size:13px;">issues</div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px;">Issue tracking</div>
+      </td>
+      <td style="font-size:12px;color:#94a3b8;text-align:center;">5</td>
+      <td style="color:#f87171;font-size:13px;font-weight:600;text-align:right;">11</td>
+      <td style="color:#34d399;font-size:13px;text-align:right;">7</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="flex:1;height:8px;background:#1a1f2e;border-radius:4px;overflow:hidden;min-width:80px;"><div style="height:100%;width:39%;background:#fb923c;border-radius:4px;"></div></div>
+          <span style="font-size:14px;font-weight:700;color:#fb923c;min-width:38px;">39%</span>
+        </div>
+      </td>
+      <td style="text-align:center;"><span style="font-size:14px;font-weight:800;color:#fb923c;">D</span></td>
+      <td><span style="color:#fbbf24;font-size:11px;">Space: 11</span></td>
+    </tr>
+
+    <tr data-score="poor">
+      <td style="color:#64748b;font-size:12px;text-align:center;">8</td>
+      <td>
+        <div style="font-weight:600;color:#f8fafc;font-size:13px;">risks</div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px;">Risk management</div>
+      </td>
+      <td style="font-size:12px;color:#94a3b8;text-align:center;">62</td>
+      <td style="color:#f87171;font-size:13px;font-weight:600;text-align:right;">80</td>
+      <td style="color:#34d399;font-size:13px;text-align:right;">45</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="flex:1;height:8px;background:#1a1f2e;border-radius:4px;overflow:hidden;min-width:80px;"><div style="height:100%;width:36%;background:#fb923c;border-radius:4px;"></div></div>
+          <span style="font-size:14px;font-weight:700;color:#fb923c;min-width:38px;">36%</span>
+        </div>
+      </td>
+      <td style="text-align:center;"><span style="font-size:14px;font-weight:800;color:#fb923c;">D</span></td>
+      <td><span style="color:#fbbf24;font-size:11px;">Space: 80</span></td>
+    </tr>
+
+    <tr data-score="poor">
+      <td style="color:#64748b;font-size:12px;text-align:center;">9</td>
+      <td>
+        <div style="font-weight:600;color:#f8fafc;font-size:13px;">dashboard</div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px;">Dashboards</div>
+      </td>
+      <td style="font-size:12px;color:#94a3b8;text-align:center;">12</td>
+      <td style="color:#f87171;font-size:13px;font-weight:600;text-align:right;">7</td>
+      <td style="color:#34d399;font-size:13px;text-align:right;">3</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="flex:1;height:8px;background:#1a1f2e;border-radius:4px;overflow:hidden;min-width:80px;"><div style="height:100%;width:30%;background:#f87171;border-radius:4px;"></div></div>
+          <span style="font-size:14px;font-weight:700;color:#f87171;min-width:38px;">30%</span>
+        </div>
+      </td>
+      <td style="text-align:center;"><span style="font-size:14px;font-weight:800;color:#f87171;">F</span></td>
+      <td><span style="color:#fbbf24;font-size:11px;">Space: 7</span></td>
+    </tr>
+
+    <tr data-score="poor">
+      <td style="color:#64748b;font-size:12px;text-align:center;">10</td>
+      <td>
+        <div style="font-weight:600;color:#f8fafc;font-size:13px;">assessments</div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px;">Assessments</div>
+      </td>
+      <td style="font-size:12px;color:#94a3b8;text-align:center;">7</td>
+      <td style="color:#f87171;font-size:13px;font-weight:600;text-align:right;">5</td>
+      <td style="color:#34d399;font-size:13px;text-align:right;">0</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="flex:1;height:8px;background:#1a1f2e;border-radius:4px;overflow:hidden;min-width:80px;"><div style="height:100%;width:0%;background:#f87171;border-radius:4px;"></div></div>
+          <span style="font-size:14px;font-weight:700;color:#f87171;min-width:38px;">0%</span>
+        </div>
+      </td>
+      <td style="text-align:center;"><span style="font-size:14px;font-weight:800;color:#f87171;">F</span></td>
+      <td><span style="color:#fbbf24;font-size:11px;">Space: 5</span></td>
+    </tr>
+
+    <tr data-score="poor">
+      <td style="color:#64748b;font-size:12px;text-align:center;">11</td>
+      <td>
+        <div style="font-weight:600;color:#f8fafc;font-size:13px;">resource-planner</div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px;">Resource planning</div>
+      </td>
+      <td style="font-size:12px;color:#94a3b8;text-align:center;">3</td>
+      <td style="color:#f87171;font-size:13px;font-weight:600;text-align:right;">9</td>
+      <td style="color:#34d399;font-size:13px;text-align:right;">0</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="flex:1;height:8px;background:#1a1f2e;border-radius:4px;overflow:hidden;min-width:80px;"><div style="height:100%;width:0%;background:#f87171;border-radius:4px;"></div></div>
+          <span style="font-size:14px;font-weight:700;color:#f87171;min-width:38px;">0%</span>
+        </div>
+      </td>
+      <td style="text-align:center;"><span style="font-size:14px;font-weight:800;color:#f87171;">F</span></td>
+      <td><span style="color:#fbbf24;font-size:11px;">Space: 9</span></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+function filterTable(status, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('tbody tr').forEach(row => {
+    row.style.display = (status === 'all' || row.dataset.score === status) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>
