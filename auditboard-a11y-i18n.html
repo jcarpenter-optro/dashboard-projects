@@ -185,7 +185,7 @@
             <li><strong>Missing aria-live regions</strong> for async state changes recurs across admin, hubs, risks, and workspace — no consistent pattern for announcing loading or result counts.</li>
             <li><strong>Icon-only buttons without aria-label</strong> appears in admin, opsaudits, and hubs. @tooltip is not a screen reader substitute.</li>
             <li><strong>No focus management on modal/drawer open</strong> is flagged in workspace and opsaudits; likely present elsewhere as custom overlays grow.</li>
-            <li><strong>dashboard</strong> has the lowest composite (63) — status values communicated only by badge color with no text alternative, and API-sourced enum strings with no i18n mapping layer.</li>
+            <li><strong>dashboard</strong> has the lowest scores (a11y 62, i18n 64): status values communicated only by badge color with no text alternative, and API-sourced enum strings with no i18n mapping layer.</li>
             <li><strong>PROJ#{id} badge pattern</strong> is undocumented across admin and tasks — needs a translator exemption note before Applanga flags it.</li>
           </ul>
         </div>
@@ -211,7 +211,6 @@
               <th class="sortable numeric" data-col="files" onclick="sortBy('files')">Files<span class="sort-indicator"></span></th>
               <th class="sortable" data-col="a11y" onclick="sortBy('a11y')">A11y Score<span class="sort-indicator"></span></th>
               <th class="sortable" data-col="i18n" onclick="sortBy('i18n')">i18n Score<span class="sort-indicator"></span></th>
-              <th class="sortable" data-col="composite" onclick="sortBy('composite')">Composite<span class="sort-indicator"></span></th>
               <th style="width:40px;"></th>
             </tr>
           </thead>
@@ -295,8 +294,7 @@
     const count = MODULES.length;
     const avgA11y = Math.round(MODULES.reduce((s, m) => s + m.a11y, 0) / count);
     const avgI18n = Math.round(MODULES.reduce((s, m) => s + m.i18n, 0) / count);
-    const composite = m => Math.round((m.a11y + m.i18n) / 2);
-    const needsAttention = MODULES.filter(m => composite(m) < 75).length;
+    const needsAttention = MODULES.filter(m => m.a11y < 75 || m.i18n < 75).length;
 
     // Band helpers
     function scoreBand(score) {
@@ -336,12 +334,12 @@
       <div class="stat-card">
         <div class="stat-card__label">Needs Attention</div>
         <div class="stat-card__value" style="color:${needsAttention > 0 ? 'var(--color-danger)' : 'var(--color-success)'}">${needsAttention}</div>
-        <div class="stat-card__description">composite score &lt; 75</div>
+        <div class="stat-card__description">either score &lt; 75</div>
       </div>
     `;
 
     // Table state
-    let currentSort = { col: 'composite', dir: 'desc' };
+    let currentSort = { col: 'a11y', dir: 'desc' };
     let currentFilter = 'all';
     let openRow = null;
 
@@ -375,7 +373,7 @@
         else if (currentSort.col === 'files') { av = a.files; bv = b.files; }
         else if (currentSort.col === 'a11y')  { av = a.a11y; bv = b.a11y; }
         else if (currentSort.col === 'i18n')  { av = a.i18n; bv = b.i18n; }
-        else                                  { av = composite(a); bv = composite(b); }
+        else                                  { av = a.a11y; bv = b.a11y; }
         if (av < bv) return currentSort.dir === 'asc' ? -1 : 1;
         if (av > bv) return currentSort.dir === 'asc' ? 1 : -1;
         return 0;
@@ -384,7 +382,7 @@
       // Filter
       const filtered = sorted.filter(m => {
         if (currentFilter === 'all') return true;
-        return scoreBand(composite(m)) === currentFilter;
+        return scoreBand(Math.min(m.a11y, m.i18n)) === currentFilter;
       });
 
       // Update badge
@@ -402,9 +400,8 @@
       const tbody = document.getElementById('table-body');
       let html = '';
       filtered.forEach((m, i) => {
-        const comp = composite(m);
         const isOpen = openRow === m.name;
-        const band = scoreBand(comp);
+        const band = scoreBand(Math.min(m.a11y, m.i18n));
 
         html += `
           <tr class="data-row" data-band="${band}" onclick="toggleDetail('${m.name}')">
@@ -422,11 +419,6 @@
                 ${bandBadge(m.i18n)}
               </div>
             </td>
-            <td>
-              <div class="score-cell">
-                ${bandBadge(comp)}
-              </div>
-            </td>
             <td style="text-align:center;">
               <button class="expand-btn ${isOpen ? 'open' : ''}" onclick="event.stopPropagation();toggleDetail('${m.name}')" aria-label="${isOpen ? 'Collapse' : 'Expand'} ${m.name} details">›</button>
             </td>
@@ -440,7 +432,7 @@
           const i18nRecs  = m.i18nRecs.map(r => `<li>${r}</li>`).join('');
           html += `
             <tr class="detail-row">
-              <td colspan="6">
+              <td colspan="5">
                 <div class="detail-inner">
                   <div>
                     <div class="detail-facet-title" style="color:var(--color-danger);">Accessibility (${m.a11y})</div>
