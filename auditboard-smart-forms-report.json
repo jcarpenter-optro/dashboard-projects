@@ -1,0 +1,187 @@
+{
+  "generated_at": "2026-03-26T00:00:00Z",
+  "modules": [
+    {
+      "name": "admin",
+      "score": 55,
+      "band": "Adequate",
+      "summary": "The admin module has no Smart Forms adoption; create and edit forms use Luna primitives directly and one settings page relies on the legacy InlineForm pattern, representing a partially migrated but non-compliant state.",
+      "risks": [
+        "The create-tag and control-group forms bypass Smart Forms entirely, meaning schema-driven validation, field-level error handling, and future form governance tooling are not applied.",
+        "The password-policy page's InlineForm pattern is a legacy interaction model that does not support standard form primitives, making it hard to migrate incrementally."
+      ],
+      "recommendations": [
+        "Migrate create-tag.gts and control-group create/edit forms to SchemaFormLoader with a FormBehavior subclass to gain schema-driven validation and governance compliance.",
+        "Replace the InlineForm/InlineTextfield/InlineTextarea usages in password-policy/template.gjs with SchemaForm or Luna Form primitives, and remove the LunaSettingsContainer legacy layout dependency."
+      ]
+    },
+    {
+      "name": "workspace",
+      "score": null,
+      "band": "N/A",
+      "summary": "The workspace module contains no user-facing forms; its routes are read-only audit log and datatable views plus a 404 page, making it exempt from Smart Forms governance.",
+      "risks": [
+        "No current risks: the module has no forms and is not in scope for Smart Forms governance.",
+        "If future feature work adds create or edit flows to the workspace module, Smart Forms adoption will need to be planned from the outset."
+      ],
+      "recommendations": [
+        "No action required at this time; re-evaluate if user-facing create or edit functionality is added to the workspace module.",
+        "Ensure any new workspace forms are built with SchemaFormLoader and a FormBehavior subclass from the start to avoid future migration debt."
+      ]
+    },
+    {
+      "name": "site-configuration",
+      "score": 45,
+      "band": "Weak",
+      "summary": "The site-configuration module has no Smart Forms adoption and relies extensively on legacy LunaSettingsContainer and SettingListItem wrappers from @auditboard/legacy-design-system across seven routes, with one route also using an inline Input with placeholder-as-label.",
+      "risks": [
+        "Pervasive LunaSettingsContainer usage across seven routes creates significant migration surface area; any future form governance tooling or accessibility auditing will be blocked by these legacy wrappers.",
+        "The branding page's placeholder-as-label Input pattern will fail accessibility audits since users relying on assistive technology have no persistent label when the field is populated."
+      ],
+      "recommendations": [
+        "Incrementally replace SettingListItemTextfield/SettingListItemTextarea wrappers with SchemaForm-governed fields starting with the branding and email-settings routes, which have the most user-editable inputs.",
+        "Fix the placeholder-as-label violation in branding/template.gjs immediately by adding a proper Field with a label slot above the brand name Input and removing the placeholder attribute."
+      ]
+    },
+    {
+      "name": "opsaudits",
+      "score": null,
+      "band": "N/A",
+      "summary": "The opsaudits module's primary create flow is a multi-step wizard (Select Template, Select Auditable Entities, Select Audit Attributes), which qualifies for the Smart Forms multi-step exemption; the assessment settings forms are administrative configuration panels that also fall outside the governed create/detail form scope.",
+      "risks": [
+        "If the multi-step audit creation wizard is ever simplified to a single-step modal, it would fall under Smart Forms governance and currently has no SchemaForm infrastructure in place.",
+        "LunaSettingsContainer usage in assessment settings components creates legacy dependency debt that will require migration work if the settings UI is redesigned."
+      ],
+      "recommendations": [
+        "Track the create-opsaudit wizard against the Smart Forms roadmap; if the wizard is consolidated, plan SchemaFormLoader adoption proactively rather than reactively.",
+        "Replace the raw label HTML element in audit-assessment-settings.gjs with a Luna Field component using the label slot to align with design system conventions even within the exempt settings context."
+      ]
+    },
+    {
+      "name": "assessments",
+      "score": null,
+      "band": "N/A",
+      "summary": "The assessments module is exclusively a multi-step assessment workflow (select assessables, assign reviewers, assign interviewees, ratings) with no standalone governed create or detail forms of its own; all form-bearing modals it launches delegate to other modules.",
+      "risks": [
+        "None: module is fully exempt as a multi-step assessment workflow with no governed forms of its own.",
+        "If non-exempt forms are later added to this module they would start with zero Smart Forms infrastructure."
+      ],
+      "recommendations": [
+        "No action required under the current Smart Forms governance scope.",
+        "If any standalone settings or create forms are added to the module in the future, ensure they adopt @auditboard/schema-form from the outset."
+      ]
+    },
+    {
+      "name": "compliance",
+      "score": 55,
+      "band": "Adequate",
+      "summary": "The compliance module owns non-exempt create and settings forms (create process, library controls, assessment settings) that are entirely built on Luna native components without any @auditboard/schema-form adoption; no smart-form/compliance directory exists, but one file still uses LunaFormGroup and placeholder-as-label antipatterns are present.",
+      "risks": [
+        "All governed create and detail forms are completely untracked by Smart Forms governance: no FormBehavior subclasses, no SchemaForm templates, no migration path.",
+        "LunaFormGroup usage in create-subprocess.gjs indicates legacy form debt that has not been addressed despite modern Luna Field components being available."
+      ],
+      "recommendations": [
+        "Create a smart-form/compliance/ directory and define FormBehavior subclasses for at minimum the create-process and create-library-control forms.",
+        "Replace remaining LunaFormGroup usage in create-subprocess.gjs with Luna Field/Form components and remove placeholder-as-label antipatterns across all create modals."
+      ]
+    },
+    {
+      "name": "hubs",
+      "score": 30,
+      "band": "Weak",
+      "summary": "The hubs (manage-hub) module has extensive LunaFormGroup usage across all four of its create modals with zero @auditboard/schema-form adoption, placeholder-as-label antipatterns, and no smart-form/hubs directory, representing significant legacy form debt.",
+      "risks": [
+        "The heaviest concentration of LunaFormGroup usage across all evaluated modules: create-new-item.gjs alone has 17+ instances spanning the full process/subprocess/control hierarchy.",
+        "No Smart Forms infrastructure whatsoever: no FormBehavior subclasses, no schema-form imports, no migration plan."
+      ],
+      "recommendations": [
+        "Prioritize migration of create-new-item.gjs and create-control.gjs to SchemaForm as these are the most complex and highest-traffic create flows in the module.",
+        "Create a smart-form/hubs/ directory with FormBehavior subclasses to register form types, and replace all LunaFormGroup usage with Luna Field/Form components as an interim step before full SchemaForm migration."
+      ]
+    },
+    {
+      "name": "issues",
+      "score": 65,
+      "band": "Adequate",
+      "summary": "The issues module has meaningful Smart Forms adoption with FormBehavior, SchemaForm, and schemaFormEngineResource in place for both create and detail flows, but all Smart Forms paths are still gated behind multiple feature flags, a legacy create path with extensive LunaFormGroup remains active in create-issue-legacy.gts, and jira-create.gjs uses LunaFormGroup without a Smart Forms path.",
+      "risks": [
+        "All four Smart Forms adoption paths (create standalone, create non-standalone, intake, detail) are individually flag-gated: if any flag is off, the module falls back to a legacy LunaFormGroup-heavy path, meaning most users may never see the Smart Forms experience in production.",
+        "create-issue-legacy.gts with 20+ LunaFormGroup instances remains the de-facto active create form for all non-flagged issue categories and will persist until flags are removed."
+      ],
+      "recommendations": [
+        "Consolidate and promote the schema-form-new-issue and schema-form-new-issue-non-standalone flags to GA to retire the legacy create path in create-issue-legacy.gts and eliminate the LunaFormGroup debt.",
+        "Migrate jira-create.gjs to use SchemaForm or at minimum Luna Field/Form components, as it is a governed create form with no Smart Forms path and active LunaFormGroup usage."
+      ]
+    },
+    {
+      "name": "tasks",
+      "score": 70,
+      "band": "Adequate",
+      "summary": "The tasks module's primary detail form uses Luna Form/Field with horizontal layout and blur-save correctly, but there are zero @auditboard/schema-form imports in the module and the create-issue entry point remains conditionally gated behind a feature flag with a legacy modal fallback.",
+      "risks": [
+        "Task module forms are not connected to the Smart Forms engine at all: the module relies entirely on the issues module's modals for create workflows, and its own detail form bypasses SchemaForm entirely.",
+        "The schema-form-new-issue flag gating means a significant portion of users still get the legacy CreateIssueModal when creating issues from workstep tasks."
+      ],
+      "recommendations": [
+        "Audit whether task-details-tab-form.gjs is a candidate for SchemaFormEngine migration, or document an explicit exemption if tasks use a non-standard form pattern.",
+        "Remove the developmentFlags.getFlag('schema-form-new-issue') gate so all users reach the Smart Forms-backed CreateIssue modal consistently."
+      ]
+    },
+    {
+      "name": "resource-planner",
+      "score": null,
+      "band": "N/A",
+      "summary": "The resource-planner module contains no user-facing forms; all components are read-only data displays (resource summaries, booking histories, project lists, and card views) with no Input, Form, Field, or Textarea elements anywhere in the module.",
+      "risks": [
+        "No governance risk identified: module is display-only with no editable forms in scope.",
+        "Future additions of edit/create forms should be built with SchemaForm from the start."
+      ],
+      "recommendations": [
+        "When resource-planner gains create or edit workflows, require SchemaForm adoption from day one to avoid legacy debt.",
+        "No immediate action required."
+      ]
+    },
+    {
+      "name": "dashboard",
+      "score": 65,
+      "band": "Adequate",
+      "summary": "The dashboard module contains real user-facing forms (ESG metric value submission, bookmark create/rename, workbook save, category change) built entirely with Luna Form/Field primitives and no @auditboard/schema-form adoption; the forms are well-structured with no LunaFormGroup but have disabled submit buttons and placeholder-as-label violations.",
+      "risks": [
+        "The ESG metric value details-form is a high-value, user-facing submission workflow with no SchemaForm adoption and wrong layout orientation for a detail form.",
+        "Disabled submit buttons on all three bookmark/workbook create modals will create confusing UX and violate the Smart Forms spec."
+      ],
+      "recommendations": [
+        "Migrate details-form.gts to SchemaFormLoader and apply @variant='horizontal' Field layout to meet the detail form specification.",
+        "Replace @disabled={{not this.bookmarkName}} patterns on submit buttons with submit-group validation so the button remains enabled and validation error messages surface on attempt."
+      ]
+    },
+    {
+      "name": "risks",
+      "score": 60,
+      "band": "Adequate",
+      "summary": "The risks module has several user-facing create and edit forms (manage-risk-appetite, manage-key-risk-indicator, intake edit-section, risk-treatment team selection) with no @auditboard/schema-form adoption, one active LunaSettingsContainer import from the legacy design system, disabled submit buttons on create modals, and placeholder-as-label violations.",
+      "risks": [
+        "Active legacy LunaSettingsContainer usage in the risk treatment workflow blocks full Smart Forms compliance for a high-stakes governance surface (approver/preparer assignment).",
+        "With no SchemaForm adoption at all in the module, any new forms added will default to non-compliant patterns without active intervention."
+      ],
+      "recommendations": [
+        "Prioritize migrating risk-treatment-review-teams-tab.gts off LunaSettingsContainer (tracked in SOX-59899) and evaluate whether SchemaForm can replace the team-selection pattern.",
+        "Remove conditional @disabled from Next buttons on create modals and implement submit-group validation to surface errors on submission attempt instead."
+      ]
+    },
+    {
+      "name": "owner-dashboard",
+      "score": null,
+      "band": "N/A",
+      "summary": "The owner-dashboard module is a read-only summary dashboard showing task groups, control items, risk charts, issue lists, and comment threads; it contains no user-facing create, edit, or submit forms, making Smart Forms governance not applicable.",
+      "risks": [
+        "No governance risk identified: module is a display-only dashboard with no editable forms.",
+        "Future feature additions (inline comment or task-status editing) should adopt SchemaForm immediately."
+      ],
+      "recommendations": [
+        "No immediate action required for Smart Forms compliance.",
+        "Establish a policy that any new interactive features added to owner-dashboard must use SchemaForm from inception."
+      ]
+    }
+  ]
+}

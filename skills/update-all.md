@@ -1,5 +1,5 @@
 ---
-description: Refresh and republish all four project dashboards on Jeff Carpenter's GitHub Pages site. Orchestrates update-ember-react, update-tokens, and the a11y + i18n eval-coordinator in parallel, then update-readiness sequentially last.
+description: Refresh and republish all four project dashboards on Jeff Carpenter's GitHub Pages site. Orchestrates update-ember-react, update-tokens, and the a11y + i18n + smart-forms eval-coordinator in parallel, then update-readiness sequentially last.
 ---
 
 # UPDATE_ALL Skill
@@ -18,6 +18,8 @@ Runs the first three dashboard update workflows in parallel, waits for all three
 | Luna Design System: Ember vs React | `update-ember-react.md` | `.../luna-components.html` |
 | Luna Token Adoption: Module Scores | `update-tokens.md` | `.../luna-module-scores.html` |
 | AuditBoard: A11y + i18n Audit | `eval-coordinator.md` | `.../auditboard-a11y-i18n.html` |
+
+The eval-coordinator (Agent 3) now also evaluates the **smart-forms** facet and writes `auditboard-smart-forms-report.json`. update-readiness reads all three data sources.
 
 Base URL: https://jcarpenter-optro.github.io/dashboard-projects/
 
@@ -50,20 +52,20 @@ Use the Agent tool to spawn three subagents simultaneously. Do not wait for one 
 **Agent 2 — Luna token scores:**
 > Follow the update-tokens skill: run `/Users/jcarpenter/Git Repositories/dashboard-projects/scripts/luna-module-audit.py --out /Users/jcarpenter/Git Repositories/dashboard-projects/luna-module-scores.html` from the auditboard-frontend repo root, then commit and push luna-module-scores.html and luna-module-scores.json to `/Users/jcarpenter/Git Repositories/dashboard-projects/`.
 
-**Agent 3 — A11y + i18n audit:**
-> Follow the eval-coordinator skill: evaluate the a11y and i18n facets for each module, write `auditboard-a11y-i18n-report.json`, generate `auditboard-a11y-i18n.html` using the optro-dashboard template, then commit and push to `/Users/jcarpenter/Git Repositories/dashboard-projects/`.
+**Agent 3 — A11y + i18n + Smart Forms audit:**
+> Follow the eval-coordinator skill (v1.2): evaluate the a11y, i18n, AND smart-forms facets for each module. Write `auditboard-a11y-i18n-report.json` and `auditboard-smart-forms-report.json` to `/Users/jcarpenter/Git Repositories/dashboard-projects/`. Generate `auditboard-a11y-i18n.html` using the optro-dashboard template, then commit and push all three files to `/Users/jcarpenter/Git Repositories/dashboard-projects/`.
 
 ---
 
 ## Notes on Agent 3
 
-The A11y + i18n audit is significantly slower than the other two — it reads source files and generates AI-driven analysis per module. Agents 1 and 2 will finish first. Wait for all three before proceeding.
+The A11y + i18n + Smart Forms audit is significantly slower than the other two — it reads source files and generates AI-driven analysis per module across three facets. Agents 1 and 2 will finish first. Wait for all three before proceeding.
 
 ---
 
 ## Phase 2: update Release Readiness (after all three are done)
 
-Only after Agents 1, 2, and 3 have all committed their output, follow the `update-readiness` skill to merge the fresh data from `luna-module-scores.json` and `auditboard-a11y-i18n.html` into `release-readiness.html` and push.
+Only after Agents 1, 2, and 3 have all committed their output, follow the `update-readiness` skill to merge fresh data from `luna-module-scores.json`, `auditboard-a11y-i18n.html`, and `auditboard-smart-forms-report.json` into `release-readiness.html` and push.
 
 This step must run last. Running it before the others would pull stale data from their previous run.
 

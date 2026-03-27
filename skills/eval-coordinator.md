@@ -1,5 +1,5 @@
-# Skill: Eval Coordinator — AuditBoard Frontend A11y + i18n
-version: 1.1
+# Skill: Eval Coordinator — AuditBoard Frontend A11y + i18n + Smart Forms
+version: 1.2
 role: orchestrator
 output: JSON
 language: Ember.js / TypeScript / JavaScript
@@ -11,12 +11,12 @@ language: Ember.js / TypeScript / JavaScript
 You are the AuditBoard Frontend Readiness Coordinator. Your job is to:
 
 1. **Discover** all evaluable route/component modules within the Ember.js monorepo
-2. **Dispatch** the accessibility and i18n eval skills against each module's source
+2. **Dispatch** the accessibility, i18n, and smart forms eval skills against each module's source
 3. **Aggregate** results into a normalized, machine-readable report
 4. **Compute** composite scores and release readiness verdicts
-5. **Emit** a structured JSON artifact that powers the eval dashboard
+5. **Emit** structured JSON artifacts that power the eval dashboard
 
-You evaluate only two facets: **accessibility** and **i18n**.
+You evaluate three facets: **accessibility**, **i18n**, and **smart-forms**.
 
 ---
 
@@ -61,6 +61,7 @@ For each module, run both facet evals. Each eval skill receives a representative
 |-------|-----------|--------------|
 | Accessibility | `eval-accessibility.md` | `accessibility` |
 | Internationalization | `eval-i18n.md` | `i18n` |
+| Smart Forms | `eval-smart-forms.md` | `smart_forms` |
 
 ---
 
@@ -71,6 +72,8 @@ For each module, run both facet evals. Each eval skill receives a representative
 ```
 composite_score = mean(accessibility_score, i18n_score)
 ```
+
+Smart forms scores are not included in the composite (they are a separate governance track, not a UX quality metric).
 
 Round to the nearest integer.
 
@@ -97,9 +100,29 @@ Round to the nearest integer.
 
 ## Phase 4 — Output Schema
 
-Write the complete result to: `auditboard-a11y-i18n-report.json`
+Write two output files to `/Users/jcarpenter/Git Repositories/dashboard-projects/`:
 
-The schema matches the Optro eval report format but with only `accessibility` and `i18n` facets populated. All other facet fields are omitted.
+**File 1:** `auditboard-a11y-i18n-report.json`
+Contains `accessibility` and `i18n` facet results per module. Consumed by `auditboard-a11y-i18n-dashboard.html`.
+
+**File 2:** `auditboard-smart-forms-report.json`
+Contains `smart_forms` facet results per module. Consumed by `update-readiness` when rebuilding the Release Readiness dashboard. Schema:
+
+```json
+{
+  "generated_at": "<ISO 8601 timestamp>",
+  "modules": [
+    {
+      "name": "<module slug>",
+      "score": <integer 0–100 or null>,
+      "band": "<Exemplary | Strong | Adequate | Weak | Critical | N/A>",
+      "summary": "<string>",
+      "risks": ["<string>", "<string>"],
+      "recommendations": ["<string>", "<string>"]
+    }
+  ]
+}
+```
 
 ---
 
@@ -110,7 +133,6 @@ The schema matches the Optro eval report format but with only `accessibility` an
 eval-coordinator /Users/jcarpenter/Git\ Repositories/auditboard-frontend
 
 # Output
-# → auditboard-a11y-i18n-report.json
+# → /Users/jcarpenter/Git Repositories/dashboard-projects/auditboard-a11y-i18n-report.json
+# → /Users/jcarpenter/Git Repositories/dashboard-projects/auditboard-smart-forms-report.json
 ```
-
-The output file is consumed by `auditboard-a11y-i18n-dashboard.html`.

@@ -207,7 +207,7 @@
         i18nRisks:['PROJ#{id} pattern should be documented as format-exempt'],
         i18nRecs:['Run pnpm generate:en-US to capture strings from recent admin work'],
         tokens:{ score:100, violations:0, css_files:0, token_usages:0, by_cat:{color:0,space:0,radius:0,typography:0}, top_files:[] },
-        smartForms: null
+        smartForms:{ score:55, risks:['The create-tag and control-group forms bypass Smart Forms entirely, meaning schema-driven validation, field-level error handling, and future form governance tooling are not applied.','The password-policy page\'s InlineForm pattern is a legacy interaction model that does not support standard form primitives, making it hard to migrate incrementally.'], recs:['Migrate create-tag.gts and control-group create/edit forms to SchemaFormLoader with a FormBehavior subclass to gain schema-driven validation and governance compliance.','Replace the InlineForm/InlineTextfield/InlineTextarea usages in password-policy/template.gjs with SchemaForm or Luna Form primitives, and remove the LunaSettingsContainer legacy layout dependency.'] }
       },
       { name:'workspace', display:'Workspace',
         a11y:66, i18n:80,
@@ -225,7 +225,7 @@
         i18nRisks:['Character limits embedded in label strings block translator flexibility'],
         i18nRecs:['Parameterize character limits: formatMessage("Company Name (max {limit} chars)", { limit: 200 })'],
         tokens: null,
-        smartForms: null
+        smartForms:{ score:45, risks:['Pervasive LunaSettingsContainer usage across seven routes creates significant migration surface area; any future form governance tooling or accessibility auditing will be blocked by these legacy wrappers.','The branding page\'s placeholder-as-label Input pattern will fail accessibility audits since users relying on assistive technology have no persistent label when the field is populated.'], recs:['Incrementally replace SettingListItemTextfield/SettingListItemTextarea wrappers with SchemaForm-governed fields starting with the branding and email-settings routes, which have the most user-editable inputs.','Fix the placeholder-as-label violation in branding/template.gjs immediately by adding a proper Field with a label slot above the brand name Input and removing the placeholder attribute.'] }
       },
       { name:'opsaudits', display:'Ops Audits',
         a11y:52, i18n:76,
@@ -269,7 +269,7 @@
             {path:'apps/client/app/components/module-compliance-assessments/layered-tree.css',violations:3}
           ]
         },
-        smartForms: null
+        smartForms:{ score:55, risks:['All governed create and detail forms are completely untracked by Smart Forms governance: no FormBehavior subclasses, no SchemaForm templates, no migration path.','LunaFormGroup usage in create-subprocess.gjs indicates legacy form debt that has not been addressed despite modern Luna Field components being available.'], recs:['Create a smart-form/compliance/ directory and define FormBehavior subclasses for at minimum the create-process and create-library-control forms.','Replace remaining LunaFormGroup usage in create-subprocess.gjs with Luna Field/Form components and remove placeholder-as-label antipatterns across all create modals.'] }
       },
       { name:'hubs', display:'Hubs',
         a11y:53, i18n:78,
@@ -283,7 +283,7 @@
             {path:'apps/client/app/components/manage-hub/modals/manage-control-environment-setup/workflow-option-frame.css',violations:1}
           ]
         },
-        smartForms: null
+        smartForms:{ score:30, risks:['The heaviest concentration of LunaFormGroup usage across all evaluated modules: create-new-item.gjs alone has 17+ instances spanning the full process/subprocess/control hierarchy.','No Smart Forms infrastructure whatsoever: no FormBehavior subclasses, no schema-form imports, no migration plan.'], recs:['Prioritize migration of create-new-item.gjs and create-control.gjs to SchemaForm as these are the most complex and highest-traffic create flows in the module.','Create a smart-form/hubs/ directory with FormBehavior subclasses to register form types, and replace all LunaFormGroup usage with Luna Field/Form components as an interim step before full SchemaForm migration.'] }
       },
       { name:'issues', display:'Issues',
         a11y:60, i18n:74,
@@ -298,7 +298,7 @@
             {path:'apps/client/app/components/module-issues/shared/issue-framework-item-id-code-cell.css',violations:3}
           ]
         },
-        smartForms: null
+        smartForms:{ score:65, risks:['All four Smart Forms adoption paths (create standalone, create non-standalone, intake, detail) are individually flag-gated: if any flag is off, the module falls back to a legacy LunaFormGroup-heavy path, meaning most users may never see the Smart Forms experience in production.','create-issue-legacy.gts with 20+ LunaFormGroup instances remains the de-facto active create form for all non-flagged issue categories and will persist until flags are removed.'], recs:['Consolidate and promote the schema-form-new-issue and schema-form-new-issue-non-standalone flags to GA to retire the legacy create path in create-issue-legacy.gts and eliminate the LunaFormGroup debt.','Migrate jira-create.gjs to use SchemaForm or at minimum Luna Field/Form components, as it is a governed create form with no Smart Forms path and active LunaFormGroup usage.'] }
       },
       { name:'tasks', display:'Tasks',
         a11y:80, i18n:86,
@@ -318,7 +318,7 @@
             {path:'apps/client/app/components/module-tasks/workstream-task/task-team-members-panel.css',violations:1}
           ]
         },
-        smartForms: null
+        smartForms:{ score:70, risks:['Task module forms are not connected to the Smart Forms engine at all: the module relies entirely on the issues module\'s modals for create workflows, and its own detail form bypasses SchemaForm entirely.','The schema-form-new-issue flag gating means a significant portion of users still get the legacy CreateIssueModal when creating issues from workstep tasks.'], recs:['Audit whether task-details-tab-form.gjs is a candidate for SchemaFormEngine migration, or document an explicit exemption if tasks use a non-standard form pattern.','Remove the developmentFlags.getFlag(\'schema-form-new-issue\') gate so all users reach the Smart Forms-backed CreateIssue modal consistently.'] }
       },
       { name:'resource-planner', display:'Resource Planner',
         a11y:72, i18n:81,
@@ -348,7 +348,7 @@
             {path:'apps/client/app/components/module-dashboard/view/metric-update-request.css',violations:1}
           ]
         },
-        smartForms: null
+        smartForms:{ score:65, risks:['The ESG metric value details-form is a high-value, user-facing submission workflow with no SchemaForm adoption and wrong layout orientation for a detail form.','Disabled submit buttons on all three bookmark/workbook create modals will create confusing UX and violate the Smart Forms spec.'], recs:['Migrate details-form.gts to SchemaFormLoader and apply @variant=\'horizontal\' Field layout to meet the detail form specification.','Replace @disabled={{not this.bookmarkName}} patterns on submit buttons with submit-group validation so the button remains enabled and validation error messages surface on attempt.'] }
       },
       { name:'risks', display:'Risks',
         a11y:70, i18n:84,
@@ -368,7 +368,7 @@
             {path:'apps/client/app/components/module-risks/view/control-mapping/mapping-step-footer.css',violations:4}
           ]
         },
-        smartForms: null
+        smartForms:{ score:60, risks:['Active legacy LunaSettingsContainer usage in the risk treatment workflow blocks full Smart Forms compliance for a high-stakes governance surface (approver/preparer assignment).','With no SchemaForm adoption at all in the module, any new forms added will default to non-compliant patterns without active intervention.'], recs:['Prioritize migrating risk-treatment-review-teams-tab.gts off LunaSettingsContainer (tracked in SOX-59899) and evaluate whether SchemaForm can replace the team-selection pattern.','Remove conditional @disabled from Next buttons on create modals and implement submit-group validation to surface errors on submission attempt instead.'] }
       },
       { name:'owner-dashboard', display:'Owner Dashboard',
         a11y:58, i18n:82,

@@ -25,8 +25,9 @@ The following files must already reflect the latest data before running this ski
 |---|---|
 | `/Users/jcarpenter/Git Repositories/dashboard-projects/luna-module-scores.json` | `update-tokens` skill |
 | `/Users/jcarpenter/Git Repositories/dashboard-projects/auditboard-a11y-i18n.html` | `update-a11y` skill |
+| `/Users/jcarpenter/Git Repositories/dashboard-projects/auditboard-smart-forms-report.json` | `eval-coordinator` skill (optional) |
 
-If either file is stale, run the corresponding skill first.
+If the tokens or a11y files are stale, run the corresponding skill first. The smart forms report is optional: if the file does not exist, set `smartForms: null` for all modules.
 
 ---
 
@@ -40,7 +41,7 @@ cat /Users/jcarpenter/Git Repositories/dashboard-projects/luna-module-scores.jso
 
 For each module in the JSON, note: `name`, `score`, `violations`, `css_files`, `token_usages`, `by_cat`, `top_files`.
 
-### Step 2: Extract a11y and i18n data from auditboard-a11y-i18n.html
+### Step 2a: Extract a11y and i18n data from auditboard-a11y-i18n.html
 
 Read the `const MODULES = [...]` array from the `<script>` block in `/Users/jcarpenter/Git Repositories/dashboard-projects/auditboard-a11y-i18n.html`.
 
@@ -49,6 +50,17 @@ For each module, collect: `name`, `a11y`, `i18n`, `a11yRisks`, `a11yRecs`, `i18n
 The 13 a11y modules are: admin, workspace, site-configuration, opsaudits, assessments, compliance, hubs, issues, tasks, resource-planner, dashboard, risks, owner-dashboard.
 
 The 11 token modules are all of the above except workspace and site-configuration. Set `tokens: null` for those two.
+
+### Step 2b: Extract smart forms data from auditboard-smart-forms-report.json
+
+```bash
+cat "/Users/jcarpenter/Git Repositories/dashboard-projects/auditboard-smart-forms-report.json"
+```
+
+If the file does not exist, set `smartForms: null` for all 13 modules and skip this step.
+
+For each module entry in `modules[]`, collect: `name`, `score`, `risks`, `recommendations`.
+Map to: `smartForms: { score: <n>, risks: [...], recs: [...] }` or `smartForms: null` if `score` is `null` (N/A modules).
 
 ### Step 3: Rebuild the const MODULES array
 
@@ -64,11 +76,13 @@ Open `/Users/jcarpenter/Git Repositories/dashboard-projects/release-readiness.ht
   tokens:{ score:<n>, violations:<n>, css_files:<n>, token_usages:<n>,
     by_cat:{color:<n>,space:<n>,radius:<n>,typography:<n>},
     top_files:[{path:'<path>',violations:<n>}, ...]
-  }
+  },
+  smartForms:{ score:<n>, risks:['<risk1>'], recs:['<rec1>'] }
 },
 ```
 
 For modules with no token data, use `tokens: null`.
+For modules with no smart forms data (file absent or score is null/N/A), use `smartForms: null`.
 
 **Display name mapping** (slug to title case):
 - admin: Admin
@@ -94,6 +108,7 @@ In the `<header>` subtitle of `release-readiness.html`, update the "Generated YY
 - **Do not change style or layout.** Only update the `const MODULES = [...]` array and the date. The CSS, HTML structure, lightbox code, and all rendering functions are the canonical versions. Touch nothing else.
 - No em dashes anywhere in string values. Use ": " or "; " instead.
 - All stat card values (avg scores, modules at risk) are derived programmatically from the MODULES array. Never hardcode them.
+- Always include the `smartForms` key on every module entry (use `null` if not yet evaluated).
 
 ### Step 6: Commit and push
 
@@ -110,5 +125,5 @@ git push origin main
 
 Report:
 - How many modules changed any score vs. the prior run
-- New avg A11y, avg i18n, avg tokens
+- New avg A11y, avg i18n, avg tokens, avg Smart Forms (if data was available)
 - Live URL: https://jcarpenter-optro.github.io/dashboard-projects/release-readiness.html
