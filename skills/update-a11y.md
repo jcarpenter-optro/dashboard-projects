@@ -78,7 +78,7 @@ Format each entry as:
 - Do NOT include a `composite()` helper function. "Needs Attention" count uses `m.a11y < 75 || m.i18n < 75`. Filtering and row band use `scoreBand(Math.min(m.a11y, m.i18n))`. Default sort is `a11y` descending.
 
 **Rules for the CSS/HTML (apply publish-dashboard.md style guide exactly):**
-- `<style>` block must contain the full EUI token set from publish-dashboard.md verbatim
+- `<style>` block must contain the full Vibe token set from publish-dashboard.md (read current token values from the local Vibe clone at `/Users/jcarpenter/Git Repositories/vibe/packages/style/src/`)
 - `--page-max-width: 1200px`
 - All media query breakpoints at 768px
 - `.panel` has `padding: var(--space-l)` by default; table panel uses class `panel--no-padding`

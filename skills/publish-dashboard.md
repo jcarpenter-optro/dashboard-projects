@@ -68,7 +68,14 @@ GitHub Pages deploys automatically within ~60 seconds.
 
 ## Vibe Style Guide
 
-Use the Vibe design system tokens and components. Refer to the Vibe MCP server (`@vibe/mcp`) for current specs on colors, typography, spacing, and components.
+Use the Vibe design system tokens and components. The Vibe repo is cloned locally at `/Users/jcarpenter/Git Repositories/vibe/`. For current specs, read directly from the source:
+
+- **Design tokens (colors, spacing, typography, borders, motion):** `packages/style/src/` — key files: `common.scss`, `spacing.scss`, `typography.scss`, `border-radius.scss`, `borders.scss`, `motion.scss`, and theme files under `themes/`
+- **Component source and props:** `packages/core/src/components/<ComponentName>/`
+- **Icons:** `packages/icons/`
+- **Main component exports:** `packages/core/src/components/index.ts`
+
+To refresh the local cache: `cd "/Users/jcarpenter/Git Repositories/vibe" && git pull`
 
 Key conventions to follow:
 

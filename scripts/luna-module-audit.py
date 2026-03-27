@@ -331,7 +331,7 @@ def generate_html(results, maps):
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;600&family=Roboto+Mono:wght@400&display=swap" rel="stylesheet">
   <style>
-    /* EUI-inspired design tokens */
+    /* Vibe design tokens */
     :root {{
       --color-primary: #0B64DD;
       --color-primary-bg: #F1F6FF;

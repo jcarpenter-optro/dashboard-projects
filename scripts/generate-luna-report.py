@@ -2,7 +2,7 @@
 """
 Luna component parity report generator.
 Uses index.ts exports as the source of truth, not directory listings.
-Styles follow the EUI-inspired design system (publish-dashboard.md).
+Styles follow the Vibe design system (publish-dashboard.md; local clone at /Users/jcarpenter/Git Repositories/vibe/).
 """
 import os, re, html, json
 from pathlib import Path
@@ -186,7 +186,7 @@ def analyze(slug, ember_files, react_files):
             f"Ember: {ember_lines} lines. React: {react_lines} lines.{size_note}")
 
 # ---------------------------------------------------------------------------
-# EUI base CSS (shared across all pages)
+# Vibe base CSS (shared across all pages)
 # ---------------------------------------------------------------------------
 
 EUI_CSS = """

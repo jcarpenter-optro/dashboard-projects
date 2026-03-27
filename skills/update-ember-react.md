@@ -205,7 +205,7 @@ After any change to the exception dicts, re-run the generator and re-check the s
 
 ## Style
 
-All generated HTML must follow the EUI style guide in `publish-dashboard.md`. The generator script has the full EUI CSS inline — do not simplify or replace it. Do not use em dashes anywhere in generated content.
+All generated HTML must follow the Vibe style guide in `publish-dashboard.md`. For current design tokens and component specs, read directly from the local Vibe clone at `/Users/jcarpenter/Git Repositories/vibe/` — see the token source locations documented in `publish-dashboard.md`. Do not use em dashes anywhere in generated content.
 
 ### Ember and React icons
 
