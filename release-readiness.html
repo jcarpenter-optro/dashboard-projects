@@ -88,6 +88,9 @@
     thead th .th-icon { padding-top: 0.15em; }
     thead th .th-icon { flex-shrink: 0; opacity: 0.7; }
     thead th .th-icon svg { width: 1.3em; height: 1.3em; }
+    thead th.th-clickable { cursor: pointer; transition: background 0.1s, color 0.1s; }
+    thead th.th-clickable:hover { background: var(--color-primary-bg); color: var(--color-primary); }
+    thead th.th-clickable:hover .th-icon { opacity: 1; }
     tbody td { padding: var(--space-m); border-bottom: var(--border-thin); vertical-align: middle; color: var(--color-paragraph); }
     tbody tr:last-child td { border-bottom: none; }
     tbody tr.data-row:hover { background: var(--color-lightest-shade); }
@@ -179,10 +182,10 @@
           <thead>
             <tr>
               <th></th>
-              <th><div class="th-inner"><span class="th-icon"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="3" r="1.5" fill="currentColor"/><path d="M4 6.5h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M8 6.5v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M5.5 13.5L8 10.5l2.5 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>A11y</div></th>
-              <th><div class="th-inner"><span class="th-icon"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M8 2.5S6 5 6 8s2 5.5 2 5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M2.5 8h11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M3 5.5h10M3 10.5h10" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.5"/></svg></span>i18n</div></th>
-              <th><div class="th-inner"><span class="th-icon"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.5 10.5A6 6 0 116 3.5a4 4 0 007.5 7z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Luna<br>Tokens</div></th>
-              <th><div class="th-inner"><span class="th-icon"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="2" width="10" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M5.5 5.5h5M5.5 8h5M5.5 10.5h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>Smart<br>Forms</div></th>
+              <th class="th-clickable" onclick="openColumnDrawer('a11y')" title="Click to learn how A11y scores are evaluated"><div class="th-inner"><span class="th-icon"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="3" r="1.5" fill="currentColor"/><path d="M4 6.5h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M8 6.5v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M5.5 13.5L8 10.5l2.5 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>A11y</div></th>
+              <th class="th-clickable" onclick="openColumnDrawer('i18n')" title="Click to learn how i18n scores are evaluated"><div class="th-inner"><span class="th-icon"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M8 2.5S6 5 6 8s2 5.5 2 5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M2.5 8h11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M3 5.5h10M3 10.5h10" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.5"/></svg></span>i18n</div></th>
+              <th class="th-clickable" onclick="openColumnDrawer('tokens')" title="Click to learn how Luna Token scores are evaluated"><div class="th-inner"><span class="th-icon"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.5 10.5A6 6 0 116 3.5a4 4 0 007.5 7z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Luna<br>Tokens</div></th>
+              <th class="th-clickable" onclick="openColumnDrawer('smart-forms')" title="Click to learn how Smart Forms scores are evaluated"><div class="th-inner"><span class="th-icon"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="2" width="10" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M5.5 5.5h5M5.5 8h5M5.5 10.5h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>Smart<br>Forms</div></th>
             </tr>
           </thead>
           <tbody id="table-body"></tbody>
@@ -864,6 +867,146 @@
     }
 
     // ---- Lightbox open/close ----
+    // ---- Column header lightboxes ----
+    var COLUMN_DEFS = {
+      'a11y': {
+        title: 'Accessibility (A11y)',
+        badge: 'LLM-as-Judge Eval',
+        skillUrl: 'https://github.com/jcarpenter-optro/dashboard-projects/blob/main/skills/eval-accessibility.md',
+        about: 'Each module is scored 0-100 against WCAG 2.2 using the LLM-as-judge eval pattern: a structured Claude Code skill submits the full module source to Claude alongside a detailed rubric, and Claude returns a calibrated numeric score with reasoning. This is a standard technique in AI-assisted code quality pipelines where a language model acts as a consistent, scalable judge across a defined evaluation framework.',
+        signals: [
+          'Semantic HTML and ARIA: native elements vs. div-based interactive components, role correctness, landmark regions',
+          'Keyboard operability: Tab/Enter/Space reachability, focus management on route transitions and modals, focus traps',
+          'Colour contrast: static analysis of hardcoded color values against WCAG contrast ratios',
+          'Images and media: alt text presence and meaningfulness, decorative image handling',
+          'Form accessibility: visible labels, error message associations via aria-describedby, required field indicators',
+          'Dynamic content: aria-live regions, role="status"/role="alert" usage, focus on async content updates'
+        ],
+        bands: [
+          { label: 'A', range: '90-100', desc: 'Native semantics throughout. All interactive elements keyboard-operable. ARIA used correctly and sparingly. All forms labeled.' },
+          { label: 'B', range: '75-89', desc: 'Most criteria met. Minor gaps: one or two div-based interactive elements or a generic ARIA label.' },
+          { label: 'C', range: '50-74', desc: 'Several accessibility issues. Inconsistent ARIA. Some unlabeled form inputs or missing focus management.' },
+          { label: 'D', range: '25-49', desc: 'Widespread keyboard inaccessibility. Missing labels. No live regions. Assistive technology partially blocked.' },
+          { label: 'F', range: '0-24', desc: 'No semantic HTML, no ARIA, no keyboard support. Assistive technology cannot navigate the module.' }
+        ]
+      },
+      'i18n': {
+        title: 'Internationalization (i18n)',
+        badge: 'LLM-as-Judge Eval',
+        skillUrl: 'https://github.com/jcarpenter-optro/dashboard-projects/blob/main/skills/eval-i18n.md',
+        about: 'Each module is scored 0-100 for translation and locale readiness using the LLM-as-judge eval pattern: a structured Claude Code skill submits the full module source to Claude with a detailed i18n rubric, and Claude returns a calibrated score with signal-by-signal reasoning. This mirrors standard eval pipelines used in AI quality assurance, applied here to frontend internationalization compliance.',
+        signals: [
+          'Hardcoded string detection: user-visible English strings in JSX, error messages, button labels, and toast notifications',
+          'Translation key usage: presence of an i18n library and consistent use of formatMessage / t() / intl.t()',
+          'Locale-aware formatting: dates, numbers, and currencies via Intl.DateTimeFormat / Intl.NumberFormat',
+          'Pluralization: ICU MessageFormat or library pluralization vs. raw JS ternaries like count === 1 ? "item" : "items"',
+          'RTL layout readiness: logical CSS properties, no hard direction:ltr overrides, flexible container widths',
+          'Pseudo-localization resilience: containers that handle 30% string expansion without clipping or overflow'
+        ],
+        bands: [
+          { label: 'A', range: '90-100', desc: 'Zero hardcoded user-facing strings. All dates, numbers, and currencies locale-formatted. Pluralization via library. RTL-compatible.' },
+          { label: 'B', range: '75-89', desc: 'Near-zero hardcoded strings. Locale formatting mostly applied. Minor RTL or pluralization gaps.' },
+          { label: 'C', range: '50-74', desc: 'Some hardcoded strings (up to 20% of visible text). Currency or date formatting not locale-aware.' },
+          { label: 'D', range: '25-49', desc: 'Majority of UI strings hardcoded. i18n library present but inconsistently used. Layout will break under string expansion.' },
+          { label: 'F', range: '0-24', desc: 'No i18n library. All strings hardcoded in English. Fixed-width containers that clip text. Not ready for any non-English locale.' }
+        ]
+      },
+      'tokens': {
+        title: 'Luna Token Adoption',
+        badge: 'Static Analysis Scan',
+        skillUrl: 'https://github.com/jcarpenter-optro/dashboard-projects/blob/main/skills/update-tokens.md',
+        about: 'Unlike the other three columns, Luna Token scores are produced by deterministic static analysis, not an LLM judge. A Python scanner (luna-module-audit.py) reads every CSS file in the module and counts hardcoded color, spacing, radius, and typography values that should instead reference Luna design system token variables. The score formula is: (1 - violations / token_usages) x 100.',
+        signals: [
+          'Color: hardcoded hex, rgb(), or hsl() values that should use Luna color tokens (--color-*)',
+          'Spacing: raw px or rem values for margin, padding, and gap that should use Luna space tokens (--space-*)',
+          'Border radius: hardcoded pixel values that should use --border-radius token variables',
+          'Typography: hardcoded font-size values that should use Luna text scale tokens (--text-*)',
+          'Score formula: (1 - violations / token_usages) x 100, floored at 0'
+        ],
+        bands: [
+          { label: 'A', range: '90-100', desc: 'Nearly all CSS values use Luna tokens. Fewer than 1 violation per 10 token usages.' },
+          { label: 'B', range: '75-89', desc: 'Strong token adoption with minor hardcoded exceptions in a few files.' },
+          { label: 'C', range: '50-74', desc: 'Mixed adoption. Several files still use hardcoded values alongside tokens.' },
+          { label: 'D', range: '25-49', desc: 'Hardcoded values are common. Token adoption is partial or inconsistent across the module.' },
+          { label: 'F', range: '0-24', desc: 'Predominantly hardcoded CSS. Luna tokens rarely or never used.' }
+        ]
+      },
+      'smart-forms': {
+        title: 'Smart Forms',
+        badge: 'LLM-as-Judge Eval',
+        skillUrl: 'https://github.com/jcarpenter-optro/dashboard-projects/blob/main/skills/eval-smart-forms.md',
+        about: 'Each module is scored 0-100 for compliance with AuditBoard\'s Smart Forms governance policy using the LLM-as-judge eval pattern: a structured Claude Code skill submits the full module source to Claude with a governance rubric, and Claude returns a calibrated score. Smart Forms governance requires all forms to use @auditboard/schema-form. Modules containing only multi-step forms, questionnaires, or assessment workflows are exempt and show N/A.',
+        signals: [
+          'SchemaForm adoption: imports from @auditboard/schema-form, use of SchemaFormLoader and schemaFormEngineResource',
+          'Legacy form removal: absence of LunaFormGroup, manual inline forms, and v1 form template patterns',
+          'Create form pattern: bordered inputs, group-on-submit validation, row-based layout, always-enabled submit button',
+          'Click-to-edit pattern: transparent inputs, per-field blur save, column-based layout in quickview panels',
+          'Form design best practices: declarative noun labels, no placeholder misuse, asterisk-only required field markers',
+          'Feature flag gates: no withFlag or getFlag calls still blocking SchemaForm rollout'
+        ],
+        bands: [
+          { label: 'A', range: '90-100', desc: 'All forms use SchemaForm. No legacy patterns. Create and click-to-edit patterns correctly implemented.' },
+          { label: 'B', range: '75-89', desc: 'Mostly SchemaForm. One or two legacy forms remain or a minor pattern deviation.' },
+          { label: 'C', range: '50-74', desc: 'Partial adoption. Some forms use SchemaForm; others still use legacy patterns.' },
+          { label: 'D', range: '25-49', desc: 'Minimal SchemaForm usage. Most forms are legacy or partially migrated.' },
+          { label: 'F', range: '0-24', desc: 'No SchemaForm usage. All forms use legacy patterns. No migration in progress.' }
+        ]
+      }
+    };
+
+    function openColumnDrawer(facet) {
+      var def = COLUMN_DEFS[facet];
+      if (!def) return;
+
+      var bandRows = def.bands.map(function(b) {
+        return '<li style="display:flex;gap:var(--space-m);align-items:flex-start;padding:var(--space-s) 0;border-bottom:var(--border-thin);">' +
+          '<span style="font-size:var(--text-xs);font-weight:var(--font-weight-semibold);background:var(--color-lightest-shade);border:var(--border-thin);border-radius:var(--border-radius);padding:2px 10px;flex-shrink:0;white-space:nowrap;">' + b.label + '&nbsp;&nbsp;' + b.range + '</span>' +
+          '<span style="font-size:var(--text-xs);color:var(--color-paragraph);line-height:var(--line-height-s);">' + b.desc + '</span>' +
+          '</li>';
+      }).join('');
+
+      var signalItems = def.signals.map(function(s) { return '<li>' + s + '</li>'; }).join('');
+
+      var body =
+        '<div class="drawer-section">' +
+          '<div class="callout callout--info">' +
+            '<div class="callout__title">How scores are calculated</div>' +
+            '<div class="callout__body">' + def.about + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="drawer-section">' +
+          '<div class="drawer-section-title">What gets evaluated</div>' +
+          '<ul class="risk-list">' + signalItems + '</ul>' +
+        '</div>' +
+        '<div class="drawer-section">' +
+          '<div class="drawer-section-title">Scoring bands</div>' +
+          '<ul style="list-style:none;padding:0;margin:0;">' + bandRows + '</ul>' +
+        '</div>' +
+        '<div class="drawer-section">' +
+          '<a href="' + def.skillUrl + '" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:var(--space-s);font-size:var(--text-s);font-weight:var(--font-weight-semibold);color:var(--color-primary);text-decoration:none;padding:var(--space-s) var(--space-m);background:var(--color-primary-bg);border:1px solid var(--color-primary);border-radius:var(--border-radius);">' +
+            '<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M8 1.5C4.41 1.5 1.5 4.41 1.5 8c0 2.88 1.87 5.32 4.47 6.18.33.06.45-.14.45-.31v-1.09c-1.82.4-2.2-.88-2.2-.88-.3-.75-.72-.95-.72-.95-.59-.4.04-.4.04-.4.65.05 1 .67 1 .67.58 1 1.52.71 1.89.54.06-.42.23-.71.41-.87-1.45-.17-2.98-.73-2.98-3.24 0-.71.25-1.3.67-1.76-.07-.16-.29-.83.06-1.73 0 0 .55-.18 1.79.67A6.2 6.2 0 018 5.07c.55 0 1.1.07 1.62.22 1.24-.85 1.79-.67 1.79-.67.35.9.13 1.57.06 1.73.42.46.67 1.05.67 1.76 0 2.52-1.53 3.07-2.99 3.23.24.2.44.6.44 1.21v1.79c0 .17.12.37.45.31A6.51 6.51 0 0014.5 8c0-3.59-2.91-6.5-6.5-6.5z"/></svg>' +
+            'View evaluation skill on GitHub' +
+          '</a>' +
+        '</div>';
+
+      document.getElementById('drawerHeader').innerHTML =
+        '<div>' +
+          '<div style="font-size:var(--text-xs);color:var(--color-subdued);margin-bottom:var(--space-xs);text-transform:uppercase;letter-spacing:0.06em;font-weight:600;">Evaluation Method</div>' +
+          '<div style="font-size:var(--text-l);font-weight:var(--font-weight-semibold);color:var(--color-ink);margin-bottom:var(--space-s);">' + def.title + '</div>' +
+          '<div style="display:flex;gap:var(--space-s);flex-wrap:wrap;">' +
+            '<span class="badge badge--default">' + def.badge + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<button class="drawer-close" onclick="closeDrawer()">&#x2715;</button>';
+
+      document.getElementById('drawerBody').innerHTML = body;
+      document.getElementById('drawer-overlay').classList.add('open');
+      var drawer = document.getElementById('drawer');
+      drawer.classList.add('open');
+      drawer.focus();
+      document.body.style.overflow = 'hidden';
+    }
+
     function openDrawer(moduleName, facet) {
       const m = MODULES.find(function(x) { return x.name === moduleName; });
       if (!m) return;
