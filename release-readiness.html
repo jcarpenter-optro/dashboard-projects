@@ -187,8 +187,8 @@
               <th class="th-clickable" onclick="openColumnDrawer('i18n')" title="Click to learn how i18n scores are evaluated"><div class="th-inner"><span class="th-icon"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M8 2.5S6 5 6 8s2 5.5 2 5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M2.5 8h11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M3 5.5h10M3 10.5h10" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.5"/></svg></span>i18n</div></th>
               <th class="th-clickable" onclick="openColumnDrawer('tokens')" title="Click to learn how Luna Token scores are evaluated"><div class="th-inner"><span class="th-icon"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.5 10.5A6 6 0 116 3.5a4 4 0 007.5 7z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Luna<br>Tokens</div></th>
               <th class="th-clickable" onclick="openColumnDrawer('smart-forms')" title="Click to learn how Smart Forms scores are evaluated"><div class="th-inner"><span class="th-icon"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="2" width="10" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M5.5 5.5h5M5.5 8h5M5.5 10.5h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>Smart<br>Forms</div></th>
-              <th><div class="th-inner"><span class="th-icon"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1.5" y="1.5" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="9.5" y="1.5" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="1.5" y="9.5" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="9.5" y="9.5" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/></svg></span>General<br>Consistency</div></th>
-              <th><div class="th-inner"><span class="th-icon"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 2L13.5 7L8 14L2.5 7L8 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M2.5 7H13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>Luna<br>Consistency</div></th>
+              <th class="th-clickable" onclick="openColumnDrawer('general-consistency')" title="Click to learn how General Consistency scores are evaluated"><div class="th-inner"><span class="th-icon"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1.5" y="1.5" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="9.5" y="1.5" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="1.5" y="9.5" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="9.5" y="9.5" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/></svg></span>General<br>Consistency</div></th>
+              <th class="th-clickable" onclick="openColumnDrawer('luna-consistency')" title="Click to learn how Luna Consistency scores are evaluated"><div class="th-inner"><span class="th-icon"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 2L13.5 7L8 14L2.5 7L8 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M2.5 7H13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>Luna<br>Consistency</div></th>
             </tr>
           </thead>
           <tbody id="table-body"></tbody>
@@ -1346,6 +1346,7 @@
       'a11y': {
         title: 'Accessibility (A11y)',
         badge: 'LLM-as-Judge Eval',
+        collectedAt: 'March 26, 2026',
         skillUrl: 'https://github.com/jcarpenter-optro/dashboard-projects/blob/main/skills/eval-accessibility.md',
         about: 'Each module is scored 0-100 against WCAG 2.2 using the LLM-as-judge eval pattern: a structured Claude Code skill submits the full module source to Claude alongside a detailed rubric, and Claude returns a calibrated numeric score with reasoning. This is a standard technique in AI-assisted code quality pipelines where a language model acts as a consistent, scalable judge across a defined evaluation framework.',
         signals: [
@@ -1367,6 +1368,7 @@
       'i18n': {
         title: 'Internationalization (i18n)',
         badge: 'LLM-as-Judge Eval',
+        collectedAt: 'March 26, 2026',
         skillUrl: 'https://github.com/jcarpenter-optro/dashboard-projects/blob/main/skills/eval-i18n.md',
         about: 'Each module is scored 0-100 for translation and locale readiness using the LLM-as-judge eval pattern: a structured Claude Code skill submits the full module source to Claude with a detailed i18n rubric, and Claude returns a calibrated score with signal-by-signal reasoning. This mirrors standard eval pipelines used in AI quality assurance, applied here to frontend internationalization compliance.',
         signals: [
@@ -1388,6 +1390,7 @@
       'tokens': {
         title: 'Luna Token Adoption',
         badge: 'Static Analysis Scan',
+        collectedAt: 'March 26, 2026 at 06:00 PM',
         skillUrl: 'https://github.com/jcarpenter-optro/dashboard-projects/blob/main/skills/update-tokens.md',
         about: 'Unlike the other three columns, Luna Token scores are produced by deterministic static analysis, not an LLM judge. A Python scanner (luna-module-audit.py) reads every CSS file in the module and counts hardcoded color, spacing, radius, and typography values that should instead reference Luna design system token variables. The score formula is: (1 - violations / token_usages) x 100.',
         signals: [
@@ -1408,6 +1411,7 @@
       'smart-forms': {
         title: 'Smart Forms',
         badge: 'LLM-as-Judge Eval',
+        collectedAt: 'March 26, 2026 at 12:00 AM UTC',
         skillUrl: 'https://github.com/jcarpenter-optro/dashboard-projects/blob/main/skills/eval-smart-forms.md',
         about: 'Each module is scored 0-100 for compliance with AuditBoard\'s Smart Forms governance policy using the LLM-as-judge eval pattern: a structured Claude Code skill submits the full module source to Claude with a governance rubric, and Claude returns a calibrated score. Smart Forms governance requires all forms to use @auditboard/schema-form. Modules containing only multi-step forms, questionnaires, or assessment workflows are exempt and show N/A.',
         signals: [
@@ -1424,6 +1428,47 @@
           { label: 'C', range: '50-74', desc: 'Partial adoption. Some forms use SchemaForm; others still use legacy patterns.' },
           { label: 'D', range: '25-49', desc: 'Minimal SchemaForm usage. Most forms are legacy or partially migrated.' },
           { label: 'F', range: '0-24', desc: 'No SchemaForm usage. All forms use legacy patterns. No migration in progress.' }
+        ]
+      },
+      'general-consistency': {
+        title: 'General Consistency',
+        badge: 'LLM-as-Judge Eval',
+        skillUrl: 'https://github.com/jcarpenter-optro/dashboard-projects/blob/main/skills/eval-general-consistency.md',
+        about: 'Each module is scored 0-100 for adherence to AuditBoard frontend coding conventions using the LLM-as-judge eval pattern: a structured Claude Code skill submits the full module source alongside a detailed rubric, and Claude returns a calibrated score. General Consistency measures how well a module follows the shared patterns the team has established: Glimmer components, @tracked state, angle-bracket template syntax, consistent loading and error states, Luna component sourcing, and naming conventions. A module that looks like the rest of the codebase is faster to onboard and cheaper to maintain.',
+        signals: [
+          'Component architecture: Glimmer (.gjs/.gts) vs. classic Ember.Component, @glimmer/component vs. EmberObject.extend()',
+          'Template syntax: angle bracket invocation vs. curly-brace classic invocations, named blocks, {{partial}} and {{component}} dynamic lookups',
+          'Reactive state: @tracked decorators and native getters vs. computed() macros, observer() calls, this.get()/this.set() accessors',
+          'Loading and error states: visible loading and error UI on all async data surfaces, consistent use of loading.gjs substates or isLoading tracked flags',
+          'Luna component sourcing: Luna primitives used for UI (Button, Field, Input, Modal, Badge, Table) vs. raw HTML or legacy-design-system fallbacks',
+          'Naming conventions: kebab-case file names, PascalCase class names, verb-first event handlers, is/has boolean prefixes, singular noun services'
+        ],
+        bands: [
+          { label: 'A', range: '90-100', desc: 'All Glimmer components with co-located templates. Angle bracket syntax throughout. @tracked and @service only. Consistent loading/error states. Luna primitives for all UI. Consistent naming.' },
+          { label: 'B', range: '75-89', desc: 'Mostly modern patterns. One or two classic patterns remaining. Angle bracket syntax dominant. Loading states on primary surfaces. Luna used for most UI.' },
+          { label: 'C', range: '50-74', desc: 'Mix of Glimmer and classic patterns. Some this.get() or computed(). Inconsistent loading states. Luna partially adopted alongside raw HTML. Minor naming deviations.' },
+          { label: 'D', range: '25-49', desc: 'Primarily classic Ember. Widespread computed() and observer(). Curly-brace syntax dominant. Few loading or error states. Minimal Luna usage.' },
+          { label: 'F', range: '0-24', desc: 'Entirely classic Ember patterns. EmberObject.extend() and this.get()/this.set() throughout. No loading or error states. No consistent naming conventions.' }
+        ]
+      },
+      'luna-consistency': {
+        title: 'Luna Consistency',
+        badge: 'LLM-as-Judge Eval',
+        skillUrl: 'https://github.com/jcarpenter-optro/dashboard-projects/blob/main/skills/eval-luna-consistency.md',
+        about: 'Each module is scored 0-100 for Luna Design System adoption using the LLM-as-judge eval pattern: a structured Claude Code skill reads the module source alongside Luna\'s component library (libraries/luna-core/, libraries/luna-tokens/) and returns a calibrated score. Luna Consistency measures how well a module uses AuditBoard\'s shared component and token library as its source of visual truth. A module that uses Luna throughout is easier to retheme, cheaper to maintain, and visually coherent. Note: this eval relies exclusively on what exists in the repository; no external Luna documentation is used.',
+        signals: [
+          'Luna component adoption: imports from @auditboard/luna-core for Button, Field, Input, Select, Modal, Badge, Table, and other primitives vs. raw HTML elements',
+          'Luna token usage: --luna-space-*, --luna-color-*, --luna-radius-*, and --luna-font-* CSS custom properties vs. hardcoded px, rem, hex, and rgb values',
+          'Legacy design system avoidance: absence of @auditboard/legacy-design-system imports (LunaFormGroup, LunaSettingsContainer, LunaModal, LunaTabList)',
+          'Luna API correctness: named @arg syntax, correct component nesting, ...attributes on outermost element only',
+          'Luna modifier usage: {{a11y}}, {{a11y-group}}, {{a11y-menu}}, {{a11y-table}}, {{trap-focus}} applied to correct element types'
+        ],
+        bands: [
+          { label: 'A', range: '90-100', desc: 'Luna components for all UI primitives. No hardcoded tokens in CSS. No legacy-design-system imports where Luna alternatives exist. Correct Luna API usage throughout.' },
+          { label: 'B', range: '75-89', desc: 'Most UI surfaces use Luna components. Occasional raw HTML for non-critical elements. Minor token hardcoding (1-5 violations). One legacy import with no Luna equivalent.' },
+          { label: 'C', range: '50-74', desc: 'Mix of Luna and raw HTML. Some token usage but meaningful hardcoded values remain. A few legacy-design-system components still in use where Luna alternatives exist.' },
+          { label: 'D', range: '25-49', desc: 'Luna components present but raw HTML is dominant for UI primitives. Widespread hardcoded token values. Multiple legacy-design-system imports covering surfaces Luna now owns.' },
+          { label: 'F', range: '0-24', desc: 'No Luna component imports. Entirely raw HTML UI. All CSS values hardcoded. Pervasive legacy-design-system usage. No Luna migration begun.' }
         ]
       }
     };
@@ -1467,8 +1512,9 @@
         '<div>' +
           '<div style="font-size:var(--text-xs);color:var(--color-subdued);margin-bottom:var(--space-xs);text-transform:uppercase;letter-spacing:0.06em;font-weight:600;">Evaluation Method</div>' +
           '<div style="font-size:var(--text-l);font-weight:var(--font-weight-semibold);color:var(--color-ink);margin-bottom:var(--space-s);">' + def.title + '</div>' +
-          '<div style="display:flex;gap:var(--space-s);flex-wrap:wrap;">' +
+          '<div style="display:flex;align-items:center;gap:var(--space-s);flex-wrap:wrap;">' +
             '<span class="badge badge--default">' + def.badge + '</span>' +
+            '<span style="font-size:var(--text-xs);color:var(--color-subdued);">Data collected: ' + def.collectedAt + '</span>' +
           '</div>' +
         '</div>' +
         '<button class="drawer-close" onclick="closeDrawer()">&#x2715;</button>';
