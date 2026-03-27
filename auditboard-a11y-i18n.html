@@ -159,8 +159,8 @@
     <div class="page-header-inner">
       <div class="breadcrumb"><a href="index.html">Projects</a> / AuditBoard: A11y + i18n Audit</div>
       <h1>AuditBoard: A11y + i18n Audit</h1>
-      <p>Accessibility and internationalization scores for the 13 most-active modules in auditboard-frontend, with per-module risks and recommendations.</p>
-      <p style="margin-top:4px;">March 26, 2026</p>
+      <p>Accessibility and internationalization scores for the 23 user-facing modules in auditboard-frontend, with per-module risks and recommendations.</p>
+      <p style="margin-top:4px;">March 27, 2026</p>
     </div>
   </header>
 
@@ -173,10 +173,10 @@
         <div class="callout__title">Strongest patterns found</div>
         <div class="callout__body">
           <ul class="callout__list">
-            <li><strong>assessments</strong> and <strong>tasks</strong> lead the field: both score above 80 on a11y and 85 on i18n, and serve as internal reference implementations.</li>
-            <li>i18n health is consistently stronger than a11y across all 13 modules. The <code>formatMessage</code> + ICU pattern is well established.</li>
-            <li>Luna components provide a solid a11y baseline. Modules that rely heavily on Luna primitives (tasks, compliance) inherit correct ARIA structure with little extra effort.</li>
-            <li>Applanga integration is active: translator context notes and glossaries are already in use where teams have invested in them.</li>
+            <li><strong>WorkStream</strong> and <strong>ASQ</strong> lead the field across all 23 modules: both score 78+ on a11y and 85+ on i18n, and serve as internal reference implementations.</li>
+            <li>i18n health is consistently stronger than a11y across all 23 modules. The <code>formatMessage</code> + ICU pattern is well established and broadly adopted.</li>
+            <li>Luna components provide a solid a11y baseline. Modules that rely heavily on Luna primitives (Exceptions, ITRM, Integrations) inherit correct ARIA structure with little extra effort.</li>
+            <li><strong>Exceptions</strong> and <strong>ITRM</strong> demonstrate exemplary SchemaForm adoption with consistent modal patterns that other modules should emulate.</li>
           </ul>
         </div>
       </div>
@@ -184,11 +184,11 @@
         <div class="callout__title">Top cross-cutting gaps</div>
         <div class="callout__body">
           <ul class="callout__list">
-            <li><strong>Missing aria-live regions</strong> for async state changes recurs across admin, hubs, risks, and workspace; no consistent pattern for announcing loading or result counts.</li>
-            <li><strong>Icon-only buttons without aria-label</strong> appears in admin, opsaudits, and hubs. @tooltip is not a screen reader substitute.</li>
-            <li><strong>No focus management on modal/drawer open</strong> is flagged in workspace and opsaudits; likely present elsewhere as custom overlays grow.</li>
-            <li><strong>dashboard</strong> has the lowest scores (a11y 62, i18n 64): status values communicated only by badge color with no text alternative, and API-sourced enum strings with no i18n mapping layer.</li>
-            <li><strong>PROJ#{id} badge pattern</strong> is undocumented across admin and tasks; needs a translator exemption note before Applanga flags it.</li>
+            <li><strong>Missing aria-label on interactive elements</strong> recurs across Controls, Issues, OpsAudit, TPRM, and Settings; icon-only buttons, form inputs, and table actions are the most common offenders. @tooltip is not a screen reader substitute.</li>
+            <li><strong>Missing aria-live regions</strong> for async state changes (loading states, save confirmations, analysis completion) is absent in most modules; no consistent pattern for announcing dynamic content updates.</li>
+            <li><strong>Dashboard</strong> has the lowest scores (a11y 62, i18n 68): Sigma iframe embeds lack accessible titles, and API-sourced enum strings have no i18n mapping layer.</li>
+            <li><strong>Hardcoded English strings</strong> persist in TPRM settings (.gjs files) and shared/ components; low formatMessage adoption in shared/ (14/44 files) propagates i18n gaps across consuming modules.</li>
+            <li><strong>Files module</strong> has the lowest smart-forms score (40): google-file-upload.gjs uses native browser APIs and Ember classic Input, bypassing all Luna Form and validation patterns.</li>
           </ul>
         </div>
       </div>
@@ -225,71 +225,121 @@
 
   <script>
     const MODULES = [
-      { name:'admin',            files:265,  a11y:75, i18n:82,
-        a11yRisks:['No aria-live regions for async status changes','Icon-only buttons rely on @tooltip as sole label'],
-        a11yRecs:['Add role="status" aria-live="polite" around search result counts','Add explicit aria-label to all IconButton usages'],
-        i18nRisks:['PROJ#{id} pattern should be documented as format-exempt'],
-        i18nRecs:['Run pnpm generate:en-US to capture strings from recent admin work'] },
-      { name:'workspace',        files:842,  a11y:66, i18n:80,
-        a11yRisks:['No explicit focus management on route transitions','ARIA entirely delegated to Luna internals across 51 sub-routes'],
-        a11yRecs:['Audit 51 workspace sub-routes for custom interactive elements bypassing Luna','Add focus-management on modal/drawer open for custom overlay patterns'],
-        i18nRisks:['842-file scope makes coverage uniformity hard to verify'],
-        i18nRecs:['Run intl-extractor against full workspace directory to surface drifted strings'] },
-      { name:'site-configuration', files:56, a11y:63, i18n:88,
-        a11yRisks:['app-settings.gjs (576 lines) has only 1 aria-label despite dense form content','features.gjs (887 lines) has no detected ARIA in sampled sections'],
-        a11yRecs:['Add aria-describedby linking each @helperText to its input in app-settings.gjs','Audit features.gjs toggles and selects for missing labels'],
-        i18nRisks:['Character limits embedded in label strings block translator flexibility'],
-        i18nRecs:['Parameterize character limits: formatMessage("Company Name (max {limit} chars)", { limit: 200 })'] },
-      { name:'opsaudits',        files:130,  a11y:52, i18n:76,
-        a11yRisks:['0 aria-label/describedby/role attributes in any sampled template','Import modal open has no screen reader announcement'],
-        a11yRecs:['Add aria-label to all icon-only buttons in workflow list templates','Add focus management on import modal open: move focus to first focusable element'],
-        i18nRisks:['OpsAudit-specific terminology needs translator context notes'],
-        i18nRecs:['Add Applanga context notes for "OpsAudit" and "Work Step" to prevent mistranslation'] },
-      { name:'assessments',      files:212,  a11y:82, i18n:85,
-        a11yRisks:['didInsert focus management (comment.gjs:163) is Ember-classic; verify lifecycle compatibility'],
-        a11yRecs:['Document aria-labelledby="comments-heading-{{@model.id}}" as the team standard for dynamic region labeling'],
-        i18nRisks:['Email notification setting labels need translator context for configuration-specific copy'],
-        i18nRecs:['Add @description hint strings to complex notification setting labels'] },
-      { name:'compliance',       files:158,  a11y:72, i18n:83,
-        a11yRisks:['Drag-and-drop reviewer reordering needs keyboard + screen reader verification'],
-        a11yRecs:['Test reviewer reordering with keyboard only and verify VoiceOver announcements'],
-        i18nRisks:['Framework-specific terms (ECW, crosswalk, instantiated control) risk semantic drift in translation'],
-        i18nRecs:['Create a compliance-specific translator glossary in Applanga for technical terms'] },
-      { name:'hubs',             files:85,   a11y:53, i18n:78,
-        a11yRisks:['0 ARIA attributes across all sampled hubs templates','Export actions have no screen reader announcement when dialog opens'],
-        a11yRecs:['Add aria-label to export/import action buttons','Add aria-live="polite" region that announces when data table finishes loading'],
-        i18nRisks:['"Superuser" label may need locale-appropriate privilege terminology'],
-        i18nRecs:['Verify "Superuser" is translated appropriately across all 9 locales'] },
-      { name:'issues',           files:128,  a11y:60, i18n:74,
-        a11yRisks:['View switcher has no aria-current on the active view'],
-        a11yRecs:['Add aria-current="page" to active Switcher.list-link in issues-view-switcher.gjs'],
-        i18nRisks:['"Mitigation Plans" and "Issues" conditionally hardcoded at issues-view-switcher.gjs:19'],
-        i18nRecs:['Replace conditional hardcoded strings with formatMessage calls'] },
-      { name:'tasks',            files:156,  a11y:80, i18n:86,
-        a11yRisks:['Target-area overlay Button (task-list-toolkit.gjs:57) may create duplicate interactive elements for keyboard users'],
-        a11yRecs:['Verify the target-area overlay button with VoiceOver: confirm it is not announced twice alongside the Heading'],
-        i18nRisks:['PROJ#{id} badge pattern needs translator documentation'],
-        i18nRecs:['Add translator description comment to the PROJ#{id} formatMessage call'] },
-      { name:'resource-planner', files:74,   a11y:72, i18n:81,
-        a11yRisks:['Search aria-label interpolates @modelType directly; may be an untranslated internal enum key'],
-        a11yRecs:['Map @modelType to a human-readable formatMessage string before using it in aria-label'],
-        i18nRisks:['@modelType passed to aria-label interpolation may be an internal key not a locale label'],
-        i18nRecs:['Use intl.formatMessage to look up display name for each modelType'] },
-      { name:'dashboard',        files:61,   a11y:62, i18n:64,
-        a11yRisks:['project-counts table has no caption or aria-label','Status values communicated only by badge color with no text alternative'],
-        a11yRecs:['Add &lt;caption&gt; or aria-label to the project counts table','Add visually-hidden text alternative when status is communicated only by badge color'],
-        i18nRisks:['Status enums (Inactive, Open, Submitted, Certified) may flow from API as English strings with no i18n mapping'],
-        i18nRecs:['Audit how status enum values are rendered: add a status-to-i18n mapping layer if they come raw from the API'] },
-      { name:'risks',            files:149,  a11y:70, i18n:84,
-        a11yRisks:['"No Results Found" text not wrapped in aria-live region','Accordion expand/collapse state may not be announced if aria-expanded is only inside Luna internals'],
-        a11yRecs:['Add aria-live="polite" around result count and empty state display in risk assessments panel','Verify Luna Accordion emits aria-expanded on the trigger button'],
-        i18nRisks:['parentModelLabel interpolation requires translations for all entity type strings in all 9 locales'],
-        i18nRecs:['Verify all parentModelLabel values have entries in en-US.json and Applanga translations'] },
-      { name:'owner-dashboard',  files:51,   a11y:58, i18n:82,
-        a11yRisks:['narratives-list.gjs uses {{on "click"}} on a Link; may not respond to Enter/Space as expected','0 aria-label attributes in sampled components'],
-        a11yRecs:['Replace on "click" handler on Link with a Button component for the preview action','Add aria-label to narrative preview trigger identifying the specific narrative by title'],
-        i18nRisks:['ICU select covers 4 types + "other"; new entity types will silently fall through to generic "Entities" label'],
-        i18nRecs:['Add new entity types to the ICU select statement as the product expands'] },
+      { name:'Dashboard (module-dashboard, owner-dashboard)', files:90, a11y:62, i18n:68,
+        a11yRisks:['Sigma embed iframes have no accessible title or aria-label','Status values communicated only by badge color with no text alternative','Only 3-4 aria-label usages across 90 files; icon-only buttons in bookmark menu lack labels'],
+        a11yRecs:['Add title attribute to all Sigma iframe embeds with a descriptive label','Add visually-hidden text alongside color-coded status badges','Audit bookmark-menu-button.gts and dashboard-more-options.gts for missing aria-labels on icon triggers'],
+        i18nRisks:['owner-dashboard has 23 formatMessage usages across 32 files; ~9 files may have unexternalized strings','Sigma dashboard labels and workbook names sourced from API may arrive as English-only strings'],
+        i18nRecs:['Audit the 9 owner-dashboard component files that do not import formatMessage for hardcoded strings','Add an i18n mapping layer for Sigma-sourced display strings if they are not translator-controlled'] },
+      { name:'Controls (module-assessments, manage-hub, module-resource-planner)', files:117, a11y:72, i18n:84,
+        a11yRisks:['module-assessments has 0 aria-label usages across 26 component files despite complex table UIs','Resource planner has only 1 aria-label across 7 files; booking-history and resource-card are likely unlabeled'],
+        a11yRecs:['Add aria-label to all IconButton usages in module-assessments, particularly submit-for-review and table action buttons','Add accessible names to resource-card and booking-history-card interactive controls'],
+        i18nRisks:['Tooltip strings in submit-for-review-button.gts are long conditional messages; translator context notes are absent'],
+        i18nRecs:['Add @description or comment context to the long conditional tooltip strings in submit-for-review-button.gts'] },
+      { name:'Risks (module-risks)', files:135, a11y:70, i18n:83,
+        a11yRisks:['Only 9 aria-label usages across 121 component files for a large, complex module','Risk hierarchy tree expand/collapse toggles may lack aria-expanded announcements','Empty-state and loading-tree components have no detected aria-live regions'],
+        a11yRecs:['Add aria-expanded to risk-node/toggle.gjs and verify the toggle button announces expand/collapse state','Add aria-live="polite" around result counts and empty-state messages in the hierarchy view','Audit icon-only action buttons in risk-node.gjs for missing aria-label'],
+        i18nRisks:['parentModelLabel interpolation requires translations for all entity type strings across all locales','Risk appetite and scoring labels may be stored as English enum keys without an i18n mapping'],
+        i18nRecs:['Verify all parentModelLabel values have entries in en-US.json and Applanga translations','Add a risk-status-to-i18n mapping utility for API-sourced enum strings'] },
+      { name:'CrossComply (module-compliance-assessments)', files:161, a11y:71, i18n:80,
+        a11yRisks:['Only 8 aria-label usages across 133 component files; wizard flows likely have unlabeled interactive elements','Avatars component uses single-letter "A" and "R" strings without accessible text expansion','Drag-and-drop reviewer reordering needs keyboard and screen reader verification'],
+        a11yRecs:['Add full aria-label to the A/R avatar abbreviations: aria-label="Approver" and aria-label="Reviewer"','Audit all wizard step components for missing labels on navigation buttons and form fields','Test reviewer reordering with keyboard only and verify screen reader announcements'],
+        i18nRisks:['Framework-specific terms (ECW, crosswalk, instantiated control) risk semantic drift in translation','Some wizard description strings are very long; translator flexibility is limited'],
+        i18nRecs:['Create a compliance-specific translator glossary in Applanga for technical terms','Break long wizard description strings into shorter, parameterized segments'] },
+      { name:'Issues (module-issues)', files:40, a11y:60, i18n:74,
+        a11yRisks:['0 aria-label usages in module-issues component files; view-issue-panel is a large legacy component with no ARIA','view-issue-panel.gjs uses Ember classic component pattern; focus management is unreliable','Issue list bulk-action controls likely have no accessible labels'],
+        a11yRecs:['Prioritize adding aria-label to all action buttons in issue-list-bulk-actions.gts','Add aria-current="page" to the active view in any issues view-switcher component','Plan a migration of view-issue-panel.gjs from Ember classic to Glimmer to unblock a11y improvements'],
+        i18nRisks:['Legacy mixins and classic component patterns in view-issue-panel may contain hardcoded English strings outside of template scanning','Action plan status strings may flow from API as English-only values'],
+        i18nRecs:['Run a targeted string scan on the legacy view-issue-panel.gjs JS class body for hardcoded strings','Add an action-plan-status-to-i18n mapping layer for API-sourced status enums'] },
+      { name:'OpsAudit (module-opsaudits)', files:48, a11y:55, i18n:77,
+        a11yRisks:['Only 1 aria-label usage across 9 component files; route-level templates have 0 aria attributes','Settings toggles in audit-general-settings.gjs have no aria-describedby linking to description text','Cross-audit summary tabs likely lack aria-selected and role="tabpanel" structure'],
+        a11yRecs:['Add aria-describedby to each ModelProjectOptionToggle linking the toggle to its @description text','Audit cross-audit-summary tab components for correct ARIA tablist/tab/tabpanel markup','Add aria-label to any icon-only action buttons in assessment settings views'],
+        i18nRisks:['OpsAudit-specific terminology (Work Step, OpsAudit) needs translator context notes to prevent mistranslation'],
+        i18nRecs:['Add Applanga context notes for "OpsAudit" and "Work Step" to prevent mistranslation across locales'] },
+      { name:'WorkStream (module-tasks)', files:50, a11y:78, i18n:85,
+        a11yRisks:['Only 1 aria-label usage across 35 component files despite rich form and assignment UIs','task-details-tab-form.gjs uses legacy JS class with untyped service injections; ARIA correctness harder to audit'],
+        a11yRecs:['Add aria-label to user-select dropdowns in task-user-selects.gts to identify preparer vs reviewer roles','Audit prior-task-card.gts and task-team-members-panel.gts for unlabeled interactive controls'],
+        i18nRisks:['PROJ#{id} badge pattern needs translator documentation to avoid Applanga flagging it'],
+        i18nRecs:['Add a translator description comment to the PROJ#{id} formatMessage call pattern'] },
+      { name:'BCM (module-bcm)', files:20, a11y:73, i18n:86,
+        a11yRisks:['Only 1 aria-label usage across 20 files; add-bcm-function modal lacks autofocus management','BcmFunction SchemaForm modal does not confirm focus moves to first field on open'],
+        a11yRecs:['Add autofocus to the first field in add-bcm-function.gts SchemaForm modal','Add aria-label to the function-category action buttons in bcm-function-categories.gts'],
+        i18nRisks:['BCM-specific terms (BIA, RTO, RPO) may need translator glossary entries to preserve acronym semantics'],
+        i18nRecs:['Add Applanga glossary entries for BIA, RTO, and RPO to prevent translation of these acronyms'] },
+      { name:'Settings (module-admin, site-configuration)', files:128, a11y:65, i18n:83,
+        a11yRisks:['0 aria-label usages across 5 module-admin component files sampled; admin tag-list and requesting-party-list have no ARIA','Routes/admin has many settings pages; no aria-live regions detected for async save feedback','SmartForm template list actions may lack accessible labels'],
+        a11yRecs:['Add aria-label to action buttons in tag-list.gts and requesting-party-list.gts','Add role="status" aria-live="polite" region for save/delete confirmation feedback in settings views','Audit smart-form-templates-list.gts action columns for accessible button labels'],
+        i18nRisks:['Settings route count is large (128 files); coverage uniformity is hard to verify without full scan','Character limits embedded in label strings block translator flexibility'],
+        i18nRecs:['Run intl-extractor against the full admin routes directory to surface drifted strings','Parameterize character limits: formatMessage("Name (max {limit} chars)", { limit: 200 })'] },
+      { name:'ESG (module-esg)', files:4, a11y:75, i18n:75,
+        a11yRisks:['Insufficient template files sampled; only 4 files exist across routes and components','ESG metric value details-form.gts (in module-dashboard) is dense but most ARIA is delegated to Luna'],
+        a11yRecs:['Expand ESG component coverage before next a11y audit cycle; current sample is too small to score precisely','Verify ESG topic creation form fields have accessible labels via Luna Field component'],
+        i18nRisks:['Insufficient template files sampled to verify i18n coverage'],
+        i18nRecs:['Ensure all ESG topic and metric label strings are externalized to en-US.json as the module grows'] },
+      { name:'TPRM (module-tprm)', files:114, a11y:67, i18n:76,
+        a11yRisks:['Only 6 aria-label usages across 114 component files; settings pages with dense notification trigger forms are unlabeled','advanced-notifications-trigger-form.gjs uses .gjs (untyped) with no detected ARIA','Hardcoded class names (RightColumn__SettingsTitle) suggest custom layout outside Luna patterns'],
+        a11yRecs:['Add aria-label to all form inputs in advanced-notifications-trigger-form.gjs','Migrate RightColumn__SettingsTitle CSS to Luna YStack/Heading for consistent accessible structure','Add aria-live region to announce when notification trigger is created or deleted'],
+        i18nRisks:['tprm-notification-settings.gjs contains long hardcoded English description strings not wrapped in formatMessage','module-tprm/settings/section-empty-state.gjs has a partially hardcoded "No ..." string'],
+        i18nRecs:['Wrap all description strings in tprm-notification-settings.gjs with formatMessage','Fix the partial "No ..." string in section-empty-state.gjs to use a complete formatMessage call'] },
+      { name:'Narratives (module-narratives)', files:1, a11y:75, i18n:75,
+        a11yRisks:['Insufficient template files sampled; only 1 component file exists in module-narratives','narrative-list.gjs is a large legacy file (untyped .gjs); ARIA correctness is hard to verify without deeper scan'],
+        a11yRecs:['Run a targeted a11y audit on narrative-list.gjs as the module grows','Ensure narrative preview trigger buttons have accessible labels identifying the specific narrative'],
+        i18nRisks:['Insufficient template files sampled to verify i18n coverage beyond 1 file'],
+        i18nRecs:['Audit narrative-list.gjs JS class body for hardcoded strings outside of the template section'] },
+      { name:'RegComply (module-regulations, libraries/module-regulations)', files:56, a11y:74, i18n:82,
+        a11yRisks:['SchemaTable-based regulatory-signals list has no visible column header ARIA; relies on SchemaTable internals','Library modal components (restore-regulation, delete-regulation) lack confirmed autofocus on open'],
+        a11yRecs:['Verify SchemaTable emits accessible column header markup (scope="col") for regulatory signals table','Add autofocus to the first interactive element in restore-regulation.gts and delete-regulation.gts modals'],
+        i18nRisks:['Regulation-specific legal terminology may need translator glossary to prevent semantic mistranslation'],
+        i18nRecs:['Create an Applanga glossary for regulatory terms (Obligation, Regulatory Signal, Update) used in the library'] },
+      { name:'Exceptions (module-exceptions)', files:52, a11y:76, i18n:84,
+        a11yRisks:['Only 1 aria-label usage across 52 files despite complex multi-view exception request workflows','exception-request-form.gts relies entirely on SchemaForm for form ARIA; custom wrapper has no ARIA of its own'],
+        a11yRecs:['Add aria-label to status badge and section heading elements in extension-post-assessment-view.gts','Verify SchemaForm renders accessible field labels for all exception request form fields'],
+        i18nRisks:['Exception status strings and extension request IDs are interpolated; translator context for ID format is absent'],
+        i18nRecs:['Add a @description hint to the "Exception Request: #{id} {title}" formatMessage call explaining the ID format'] },
+      { name:'Integrations (module-integrations)', files:73, a11y:74, i18n:85,
+        a11yRisks:['Animated container and animated-each components may cause focus disruption during list transitions','Credential form select inputs use attrLabel helper; verify accessible label association with the input'],
+        a11yRecs:['Audit AnimatedEach transitions in credential-list.gts to ensure focus is not lost during list updates','Verify Luna Field + Select correctly associates the label with the select input via for/id'],
+        i18nRisks:['versionLabelByType record uses hardcoded "Server Version" string for Alteryx; not wrapped in formatMessage at definition'],
+        i18nRecs:['Move versionLabelByType string values into formatMessage calls so they are extracted for translation'] },
+      { name:'Automations (module-automations)', files:155, a11y:72, i18n:83,
+        a11yRisks:['Only 9 aria-label usages across 155 files; form wizard steps likely have unlabeled navigation controls','monitor-details-form.gts and connect-workflow.gts have no detected ARIA in their signatures','Large number of .gjs (62) vs .gts (93) files; untyped components harder to audit for ARIA correctness'],
+        a11yRecs:['Add aria-label to wizard navigation buttons (Next, Back, Cancel) in automation creation wizard','Add aria-describedby linking automation parameter fields to their description text in automation-details-fields.gts','Prioritize migrating high-traffic .gjs automation components to .gts for better auditing surface'],
+        i18nRisks:['Parameter field labels sourced from automation workflow schema may arrive as English-only strings from the API'],
+        i18nRecs:['Add an i18n mapping layer for automation parameter schema labels if they are not translator-controlled'] },
+      { name:'Inventory (module-inventory)', files:98, a11y:78, i18n:80,
+        a11yRisks:['Breadcrumb overflow popup uses didInsert modifier for DOM access; focus management on popup open is unverified','Platform hierarchy tree nodes (node.gjs) have no detected aria-expanded for nested tree disclosure'],
+        a11yRecs:['Add aria-haspopup and aria-expanded to the breadcrumb overflow trigger in breadcrumbs.gts','Add aria-expanded to platform-process/node.gjs tree toggle to announce expand/collapse state'],
+        i18nRisks:['Organizational hierarchy labels sourced from AuditableEntity model may arrive as English-only user-entered strings'],
+        i18nRecs:['Document that user-entered entity names are exempt from i18n extraction to avoid false Applanga flags'] },
+      { name:'AI Governance (module-ai-governance)', files:1, a11y:75, i18n:75,
+        a11yRisks:['Insufficient template files sampled; only 1 component file exists','The single index.gts component is a pass-through container with no interactive elements to audit'],
+        a11yRecs:['Establish a11y patterns early as the AI Governance module grows; adopt Luna ViewLayout and QuickViewHeader from the start'],
+        i18nRisks:['Insufficient template files sampled to verify i18n coverage'],
+        i18nRecs:['Ensure all AI Governance label strings are externalized to en-US.json as the module is built out'] },
+      { name:'Files (files)', files:54, a11y:69, i18n:81,
+        a11yRisks:['google-file-upload.gjs uses document.getElementById for native file input; input has no visible label','file-sort.gts and move-selected-file.gjs likely have unlabeled action controls','Native @ember/component Input usage in google-file-upload.gjs bypasses Luna a11y baseline'],
+        a11yRecs:['Add aria-label or a visually-associated label to the native file input in google-file-upload.gjs','Replace @ember/component Input with Luna Input or add a visible label to meet WCAG 1.3.1','Add aria-label to sort and move action buttons in file-sort.gts and move-selected-file.gjs'],
+        i18nRisks:['Error message string "There was an error on file upload. Please try again." is defined in JS logic; verify it is translated in all locales'],
+        i18nRecs:['Confirm the error notification string in google-file-upload.gjs is present in all locale translation files'] },
+      { name:'Timesheets (module-timesheets)', files:1, a11y:75, i18n:75,
+        a11yRisks:['Insufficient template files sampled; only 1 component file exists','list.gts uses SelectDateRange and SchemaTable; ARIA correctness depends entirely on Luna and SchemaTable internals'],
+        a11yRecs:['Verify SelectDateRange emits an accessible date range announcement when the range changes','Add aria-label to the Link component used for timesheet entry navigation if it is icon-only'],
+        i18nRisks:['Insufficient template files sampled to verify i18n coverage beyond 1 file'],
+        i18nRecs:['Ensure date range filter labels in list.gts are externalized and that week-of date formatting uses formatDate'] },
+      { name:'Automated Security Questionnaires (module-questionnaires)', files:109, a11y:79, i18n:86,
+        a11yRisks:['SkeletonText and Spinner loading states in modals have no aria-live announcement when content loads','Animated modifier used for response analysis polling; focus not confirmed to return after analysis completes'],
+        a11yRecs:['Add aria-live="polite" region that announces when automated questionnaire analysis completes','Ensure focus returns to the triggering button after the analysis modal closes'],
+        i18nRisks:['AnalysisStatus enum values may be rendered as English-only strings without an i18n mapping'],
+        i18nRecs:['Add an analysis-status-to-i18n mapping for AnalysisStatus enum values displayed in the UI'] },
+      { name:'ITRM / Cyber Risk (module-itrm)', files:29, a11y:77, i18n:83,
+        a11yRisks:['VulnerabilityStatusBadge communicates status via color (blue/gray) and text; verify contrast meets WCAG AA','SchemaForm-based questionnaire modals rely entirely on schema-form for ARIA; custom wrapper adds no ARIA'],
+        a11yRecs:['Verify VulnerabilityStatusBadge color contrast for both Active (blue) and Inactive (gray) variants','Add aria-label to exception-request-modal and questionnaire-answer-modal trigger buttons identifying the action'],
+        i18nRisks:['Vulnerability severity and status labels may be API-sourced English enum strings without i18n mapping'],
+        i18nRecs:['Add a vulnerability-severity-to-i18n and vulnerability-status-to-i18n mapping utility for API-sourced enum values'] },
+      { name:'Other (shared, application-chrome)', files:70, a11y:80, i18n:72,
+        a11yRisks:['application-chrome Layout uses initA11yModifier with setTimeout for Tabster initialization; timing is fragile','Only 2 aria-label usages across 26 application-chrome files; navigation landmark labels unverified'],
+        a11yRecs:['Replace setTimeout in initA11yModifier with a more reliable initialization trigger (e.g., ember-concurrency task or didInsert + nextTick)','Add aria-label to main navigation landmark and sidebar navigation in layout components'],
+        i18nRisks:['shared/ components have only 14 formatMessage usages across 44 files; many shared components likely have hardcoded strings','application-chrome has only 12 formatMessage usages across 26 files; navigation labels may be hardcoded'],
+        i18nRecs:['Run a targeted string audit on shared/ components to surface hardcoded English labels','Externalize all navigation link text in application-chrome to formatMessage calls'] },
     ];
 
     // Derived stats
