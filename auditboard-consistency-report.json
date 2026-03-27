@@ -1,0 +1,382 @@
+{
+  "generated_at": "2026-03-27T00:00:00Z",
+  "modules": [
+    {
+      "name": "admin",
+      "general_consistency": {
+        "score": 72,
+        "band": "Adequate",
+        "summary": "The admin module uses modern Glimmer components and angle-bracket syntax throughout its route templates, but a small number of controllers still contain classic this.get() and computed() patterns.",
+        "risks": [
+          "admin/external-api/api-access/controller.js and admin/control/section/index/controller.js contain this.get() and this.set() calls, creating a dual-mental-model maintenance burden for engineers working across those files.",
+          "admin/password-policy/template.gjs imports LunaSettingsContainer from @auditboard/legacy-design-system with an eslint-disable comment, signaling known debt that has not been resolved."
+        ],
+        "recommendations": [
+          "Replace this.get() / this.set() calls in admin controllers with @tracked properties and native getters, following the pattern already used in admin/settings/controller.js.",
+          "Migrate LunaSettingsContainer in admin/password-policy/template.gjs to Luna Panel or layout primitives to align with the pattern used in admin/control-group/index/template.gjs."
+        ]
+      },
+      "luna_consistency": {
+        "score": 68,
+        "band": "Adequate",
+        "summary": "The admin module imports Luna components widely, but admin/password-policy/template.gjs and admin/scim/template.gjs still depend on LunaSettingsContainer and InlineForm wrappers that bypass Luna Field and Input primitives directly.",
+        "risks": [
+          "admin/password-policy/template.gjs uses InlineTextfield, InlineSelect, and InlineTextarea throughout instead of Luna Field + Input, making this the highest-density legacy form surface in the module.",
+          "LunaSettingsContainer is used as the primary layout wrapper in two route templates; Luna Panel + Stack can substitute for most usages but has not been applied."
+        ],
+        "recommendations": [
+          "Replace LunaSettingsContainer in admin/password-policy/template.gjs and admin/scim/template.gjs with Luna Panel or layout primitives, following the control-group/index pattern that uses Luna ListView and SchemaTable cleanly.",
+          "Migrate InlineTextfield and InlineSelect in admin/password-policy to Luna Field + Input / Select primitives, removing the eslint-disable auditboard/no-old-luna suppression."
+        ]
+      }
+    },
+    {
+      "name": "workspace",
+      "general_consistency": {
+        "score": 78,
+        "band": "Strong",
+        "summary": "The workspace module is a large routing shell with nearly all UI delegated to nested route templates and shared components; templates are modern .gjs files, though route-level controllers contain occasional this.get() calls and some rely on mixin inheritance.",
+        "risks": [
+          "Several workspace sub-route controllers still use this.get() calls, a known legacy pattern that conflicts with the @tracked model used in newer code.",
+          "The workspace route shell references the global NProgress object directly in afterModel(), an unabstracted side-effect pattern inconsistent with the service-injection model used elsewhere."
+        ],
+        "recommendations": [
+          "Audit workspace controllers for this.get() usage and migrate to direct property access over @tracked state, prioritizing the metrics and compliance-assessments sub-trees.",
+          "Replace the NProgress.done() global call in routes/workspace/route.js with a service-injected loading indicator pattern consistent with LoadableRoute or the Luna loading spinner."
+        ]
+      },
+      "luna_consistency": {
+        "score": 74,
+        "band": "Adequate",
+        "summary": "The workspace route templates delegate all UI to shared Layout1col and DatatableLayout infrastructure, making direct Luna adoption assessment partial; Luna adoption is largely inherited rather than actively applied.",
+        "risks": [
+          "The workspace route templates delegate all UI to shared Datatable and Layout1col infrastructure, so Luna adoption is opaque: regressions in those shared components would affect workspace without any local signal.",
+          "workspace/route.js references the global NProgress object, bypassing any Luna or service-layer loading indicator, which is a visible UX inconsistency."
+        ],
+        "recommendations": [
+          "Review shared components used by workspace (Layout1col, DatatableLayout) to confirm they use Luna primitives internally, so workspace's inherited adoption is sound.",
+          "Replace NProgress global in workspace/route.js with a Luna loading indicator or the existing application-level loading substate pattern used elsewhere in the codebase."
+        ]
+      }
+    },
+    {
+      "name": "site-configuration",
+      "general_consistency": {
+        "score": 58,
+        "band": "Adequate",
+        "summary": "The site-configuration module mixes modern .gjs route templates with controllers that still contain multiple computed() macros and this.get() calls, most notably in features/controller.js (14 occurrences), creating a split model where templates look modern but backing logic is classic.",
+        "risks": [
+          "site-configuration/features/controller.js uses computed() macros with an eslint-disable comment, creating a maintenance zone where engineers must reason about both @tracked and computed() invalidation in the same codebase context.",
+          "site-configuration/features/template.gjs is 888 lines and mixes Bootstrap grid classes with Luna components, signaling incomplete migration of the layout tier."
+        ],
+        "recommendations": [
+          "Replace all computed() macros in site-configuration/features/controller.js with native getters over @tracked properties, following the pattern in site-configuration/slack-integration-settings/controller.ts.",
+          "Break up the monolithic site-configuration/features/template.gjs into sub-components per feature section, each following the lean delegation pattern used in site-configuration/email-log/template.gjs."
+        ]
+      },
+      "luna_consistency": {
+        "score": 42,
+        "band": "Weak",
+        "summary": "Site-configuration is the heaviest user of LunaSettingsContainer from @auditboard/legacy-design-system in the evaluated set, with 7 route template files importing it while simultaneously using Luna Button, Input, and Toggle, indicating a partially migrated state with a large remaining legacy surface.",
+        "risks": [
+          "site-configuration/features/template.gjs and site-configuration/branding/template.gjs both use Bootstrap grid markup alongside LunaSettingsContainer, creating a tripartite layout system (Bootstrap, LunaSettingsContainer, Luna Stack) in the same file.",
+          "site-configuration/branding/styles.css uses hardcoded padding: 1rem and gap: 1rem values and color: red that bypass Luna tokens entirely."
+        ],
+        "recommendations": [
+          "Replace LunaSettingsContainer in site-configuration/branding/template.gjs and site-configuration/features/template.gjs with Luna Panel or YStack/XStack layout primitives, starting with the smallest templates as proof-of-concept migrations.",
+          "Update site-configuration/branding/styles.css to replace hardcoded spacing values and the color: red rule with the corresponding Luna tokens (--luna-space-base, --luna-color-danger)."
+        ]
+      }
+    },
+    {
+      "name": "opsaudits",
+      "general_consistency": {
+        "score": 64,
+        "band": "Adequate",
+        "summary": "The opsaudits route templates are modern .gjs files using angle-bracket syntax and Luna imports, but several controllers still carry computed() macros and this.get() calls, most significantly opsaudits/category/dashboard/my-dashboard/controller.js which has three computed() properties and workstep.get() calls.",
+        "risks": [
+          "opsaudits/category/dashboard/my-dashboard/controller.js uses three @computed() decorators and calls workstep.get() throughout, mixing classic Ember Data accessor patterns with the modern service-injection model in the same class.",
+          "opsaudits/category/all/controller.js extends Controller with DatatableControllerMixin using mixin inheritance that bypasses TypeScript types and makes the component surface invisible to static analysis."
+        ],
+        "recommendations": [
+          "Refactor opsaudits/category/dashboard/my-dashboard/controller.js to replace computed() macros with @cached getters over @tracked state and replace workstep.get() calls with direct property access.",
+          "Migrate DatatableControllerMixin off the mixin pattern for opsaudits controllers, replacing with composition or a typed base class consistent with how newer workspace controllers are structured."
+        ]
+      },
+      "luna_consistency": {
+        "score": 72,
+        "band": "Adequate",
+        "summary": "The opsaudits route templates import Luna Button and Icon for primary actions and delegate to Luna-aware shared infrastructure; no legacy-design-system imports were found in the opsaudits route layer, though the module has no dedicated CSS files of its own, so token usage cannot be independently verified.",
+        "risks": [
+          "opsaudits delegates its entire table UI to shared DatatableLayout infrastructure; if those shared components carry Luna debt, opsaudits inherits it invisibly without any local override point.",
+          "The legacy DatatableControllerMixin pattern in opsaudits controllers means the datatable rendering pipeline is opaque; any Luna migration of the datatable layer must account for mixin-extended controllers."
+        ],
+        "recommendations": [
+          "Verify that the DatatableLayout and DatatableFilterButtons shared components used by opsaudits templates use Luna primitives internally to confirm opsaudits' inherited Luna compliance.",
+          "Add co-located CSS modules to opsaudits workflow-level components if custom styling is needed, using --luna-* tokens rather than utility class strings."
+        ]
+      }
+    },
+    {
+      "name": "assessments",
+      "general_consistency": {
+        "score": 77,
+        "band": "Strong",
+        "summary": "The assessments module demonstrates strong modern patterns with Glimmer TypeScript components, @tracked properties, @service decorators, and ember-concurrency tasks throughout, though assessment-response.gjs retains a response.set() call and general-settings.gjs uses get/set via @ember/object helpers.",
+        "risks": [
+          "assessments/assessment-response.gjs calls response.set('value', value), a classic Ember Data accessor pattern inconsistent with direct property assignment used in the newer response-table-v2.gts.",
+          "assessments/settings/general-settings.gjs uses get(this, 'args.model.projectOptions') and set() via @ember/object helpers rather than direct property access, mixing two patterns in the same action handler."
+        ],
+        "recommendations": [
+          "Replace response.set('value', value) in assessments/assessment-response.gjs with direct property assignment (response.value = value) to align with the pattern in response-table-v2.gts.",
+          "Refactor the updateProjectOption action in assessments/settings/general-settings.gjs to replace get/set @ember/object calls with direct property access over @tracked or native model properties."
+        ]
+      },
+      "luna_consistency": {
+        "score": 60,
+        "band": "Adequate",
+        "summary": "The assessments module makes broad use of Luna components across 107 of its component files, but 19 component files import LunaSettingsContainer from @auditboard/legacy-design-system and CSS files use hardcoded pixel padding values that should be Luna tokens.",
+        "risks": [
+          "assessments/settings/general-settings.gjs wraps its entire settings surface in LunaSettingsContainer and uses InlineForm, InlineTextarea, and InlineDatepicker legacy form wrappers, creating visual inconsistency with the Luna Field + Input pattern used in the form's upper section.",
+          "assessments/assessment-response.css uses hardcoded px padding values (8px, 10px, 15px) instead of --luna-space-* tokens."
+        ],
+        "recommendations": [
+          "Replace LunaSettingsContainer in assessments/settings/general-settings.gjs with Luna Panel or YStack/XStack primitives, and replace InlineForm/InlineTextarea with Luna Form + Field + Textarea.",
+          "Update assessments/assessment-response.css to replace all hardcoded px spacing with the corresponding --luna-space-s, --luna-space-m, and related tokens."
+        ]
+      }
+    },
+    {
+      "name": "compliance",
+      "general_consistency": {
+        "score": 83,
+        "band": "Strong",
+        "summary": "Compliance is one of the better-migrated modules, with nearly all components in .gts/.gjs using @tracked, @service, and angle-bracket syntax; only two datatable-action files contain residual this.get calls, and the modal layer is largely on Luna.",
+        "risks": [
+          "this.get() calls remain in compliance/datatable-actions/control-selected-action-buttons.gjs and framework-control-matrix-selected-action-buttons.gjs, creating a legacy accessor pattern in an otherwise modern module.",
+          "LunaFormGroup from @auditboard/legacy-design-system still present in compliance/modals/create-subprocess.gjs, mixing legacy form primitives with a modern Modal wrapper."
+        ],
+        "recommendations": [
+          "Migrate compliance/datatable-actions/control-selected-action-buttons.gjs to use direct property access, removing this.get() calls.",
+          "Replace the three LunaFormGroup blocks in compliance/modals/create-subprocess.gjs with Luna Field and Input components, which are already used in peer modals like bulk-edit-request-assignees.gjs."
+        ]
+      },
+      "luna_consistency": {
+        "score": 79,
+        "band": "Strong",
+        "summary": "Compliance uses Luna Button, Modal, Form, Field, Select, and SchemaTable broadly and correctly; the main gap is the LunaFormGroup legacy import in create-subprocess.gjs and the absence of trap-focus on any modal in the module.",
+        "risks": [
+          "LunaFormGroup imported from @auditboard/legacy-design-system in compliance/modals/create-subprocess.gjs is the only form-creation modal still on legacy form primitives.",
+          "No trap-focus modifier found on any modal overlay across the compliance component tree despite multiple keyboard-interactive modals."
+        ],
+        "recommendations": [
+          "Convert the three LunaFormGroup usages in create-subprocess.gjs to Luna Field + Select and Field + Input blocks, following the pattern in bulk-edit-request-assignees.gjs.",
+          "Add trap-focus to at least the primary modal overlays (create-subprocess, bulk-edit-request-assignees) to ensure keyboard focus is contained during modal interaction."
+        ]
+      }
+    },
+    {
+      "name": "hubs",
+      "general_consistency": {
+        "score": 41,
+        "band": "Weak",
+        "summary": "The core manage-hub tree components (Entity, Process, Subprocess, Control) are all classic Ember components extending @ember/component with mixins and lifecycle hooks, and the modal layer uses LunaModal with computed() and this.get/this.set extensively.",
+        "risks": [
+          "Classic @ember/component with Component.extend(StatefulComponentMixin) in manage-hub/entity.gjs, process.gjs, subprocess.gjs, and control.gjs, and 49 this.get()/this.set() calls across 7 files.",
+          "computed() macros in manage-hub/modals/create-control.gjs and create-new-item.gjs, alongside LunaModal and a CreateModal base class inheritance pattern, compound the migration debt."
+        ],
+        "recommendations": [
+          "Prioritize rewriting manage-hub/entity.gjs, process.gjs, subprocess.gjs, and control.gjs as Glimmer components extending @glimmer/component, replacing the StatefulComponentMixin with @tracked state.",
+          "Convert manage-hub/modals/create-control.gjs and create-process.gjs to standalone Glimmer modal components using Luna Layout.Modal, removing the CreateModal base class inheritance."
+        ]
+      },
+      "luna_consistency": {
+        "score": 44,
+        "band": "Weak",
+        "summary": "The newer manage-hub modals like manage-control-environment.gts use Luna components correctly, but the foundational create-control and create-process modals remain on LunaModal and LunaFormGroup from the legacy design system.",
+        "risks": [
+          "LunaModal and LunaFormGroup from @auditboard/legacy-design-system are used in create-control.gjs and create-process.gjs, the two highest-traffic modals in the module.",
+          "No trap-focus modifier found on any modal in manage-hub despite multiple keyboard-interactive overlays."
+        ],
+        "recommendations": [
+          "Rewrite create-control.gjs and create-process.gjs to use Luna Layout.Modal and Luna Field/Input/Select primitives, following the pattern established in manage-control-environment.gts.",
+          "Add trap-focus to manage-control-environment.gts and any new modal rewrites to ensure keyboard accessibility compliance."
+        ]
+      }
+    },
+    {
+      "name": "issues",
+      "general_consistency": {
+        "score": 55,
+        "band": "Adequate",
+        "summary": "The module-issues layer is modern and well-structured, but the core issues/ component layer contains critical classic components including view-issue-panel.gjs and readonly-issue-panel.gjs with dozens of @computed macros, making this a split module.",
+        "risks": [
+          "issues/view-issue-panel.gjs uses classic Component.extend(SaveModelMixin) with 20+ @computed macros and is the central component in the issues layer, requiring engineers to context-switch between two mental models.",
+          "issues/buttons/status-button.js is a classic base class with @computed and this.get() inherited by all status-button variants (open, closed, draft, canceled, remediated)."
+        ],
+        "recommendations": [
+          "Begin incremental migration of view-issue-panel.gjs by extracting sub-sections into new Glimmer components, replacing @computed macros with native getters and @tracked state.",
+          "Rewrite issues/buttons/status-button.js as a Glimmer component, replacing @computed and this.get() with @tracked properties and direct method calls; all status-button subclasses would benefit immediately."
+        ]
+      },
+      "luna_consistency": {
+        "score": 63,
+        "band": "Adequate",
+        "summary": "Newer issue components demonstrate correct Luna usage including Button, Field, Form, Select, and Modal, but legacy modal files (sort-issues.gjs, jira-create.gjs) still use LunaModal and LunaFormGroup, and the module has no trap-focus coverage.",
+        "risks": [
+          "LunaModal from @auditboard/legacy-design-system in issues/modals/sort-issues.gjs and issues/modals/jira-create.gjs, both without focus trapping.",
+          "LunaFormGroup from @auditboard/legacy-design-system in issues/reference-questions.gjs and issues/modals/jira-create.gjs where Luna Field + Input is available and used in peer components."
+        ],
+        "recommendations": [
+          "Migrate issues/modals/sort-issues.gjs and issues/modals/jira-create.gjs from LunaModal to Luna Layout.Modal and replace LunaFormGroup fields with Luna Field + Input/Select.",
+          "Replace LunaAsyncSelectOptions in issues-controls-multiselect.gjs with the Luna SelectMultiple or FuzzySearch component, which support async queries and are already used elsewhere."
+        ]
+      }
+    },
+    {
+      "name": "tasks",
+      "general_consistency": {
+        "score": 68,
+        "band": "Adequate",
+        "summary": "The module-tasks layer is fully modern Glimmer, but several settings components in the tasks/ layer still use classic Ember.Component, this.get/set, and computed() macros that have not yet been migrated.",
+        "risks": [
+          "schedule-settings.gjs extends classic Ember.Component with this.get('model') and schedule.set() calls, creating a pattern inconsistency in an otherwise modern module.",
+          "create-schedule.gjs uses @computed macros with this.get() and this.set() calls, mixing classic patterns with the @tracked model used in adjacent components."
+        ],
+        "recommendations": [
+          "Migrate schedule-settings.gjs from classic Ember.Component to Glimmer: replace this.get/set with @tracked properties and direct property access.",
+          "Migrate create-schedule.gjs: replace @computed macros with native getters and replace this.get()/this.set() with direct property access."
+        ]
+      },
+      "luna_consistency": {
+        "score": 74,
+        "band": "Adequate",
+        "summary": "Core settings forms use Luna Field/Input/Select/Form correctly, but several CSS files use hardcoded px spacing, and the classic layer in schedule-settings.gjs bypasses Luna form patterns entirely.",
+        "risks": [
+          "settings/setting-form-label.css uses hardcoded width: 150px and padding-top: 5px; settings/layout/settings-container.css uses multiple hardcoded px values (padding-top: 24px, padding-bottom: 32px) without luna-space tokens.",
+          "No trap-focus or a11y modifiers found in any tasks modal or overlay component."
+        ],
+        "recommendations": [
+          "Replace hardcoded px values in settings-container.css (padding-top: 24px, padding-bottom: 32px, padding: 16px) with --luna-space-* tokens.",
+          "Add trap-focus modifier to the ChooseTestSectionModal and EditProjectTaskCategory modal components used in general-settings.gjs."
+        ]
+      }
+    },
+    {
+      "name": "resource-planner",
+      "general_consistency": {
+        "score": 82,
+        "band": "Strong",
+        "summary": "Resource Planner is predominantly modern Glimmer with TypeScript throughout, using @tracked and @service decorators consistently, though two legacy-design-system component imports remain in the filter UI and Ember array prototype extensions appear in resources-manager.gts.",
+        "risks": [
+          "views/filter.gts imports LunaButtonGroup and LunaListSelect from @auditboard/legacy-design-system, introducing a dependency that will need migration as those components are deprecated.",
+          "Use of Ember array prototype extensions (.sortBy(), .compact()) in resources-manager.gts creates implicit reliance on Ember's array augmentation which is being removed from modern builds."
+        ],
+        "recommendations": [
+          "Replace LunaButtonGroup and LunaListSelect in views/filter.gts with Luna ButtonWithMenu and SelectMultiple, following the pattern already used in modals/base-booking.gts.",
+          "Replace .sortBy() and .compact() array calls in resources-manager.gts with native sort() and filter() to remove reliance on Ember array prototype extensions."
+        ]
+      },
+      "luna_consistency": {
+        "score": 79,
+        "band": "Strong",
+        "summary": "Resource Planner has strong Luna adoption with Button, Field, Input, Select, Modal, Badge, and form primitives sourced from 'luna' throughout, but two legacy-design-system imports and CSS that uses hardcoded rem spacing create residual debt.",
+        "risks": [
+          "views/filter.gts uses LunaListSelect and LunaButtonGroup from @auditboard/legacy-design-system for the filter panel UI, visible interactive surfaces that are visually inconsistent with Luna's current patterns.",
+          "CSS files use hardcoded rem spacing values (margin-bottom: 0.5rem, padding-top: 0.5rem) rather than Luna space tokens, creating maintenance risk if the design token scale changes."
+        ],
+        "recommendations": [
+          "Migrate views/filter.gts to use Luna's ButtonWithMenu and SelectMultiple to eliminate the two legacy-design-system imports.",
+          "Replace hardcoded rem spacing in modals/base-booking.css with Luna space tokens (--luna-space-s for 0.5rem, --luna-space-base for 1rem)."
+        ]
+      }
+    },
+    {
+      "name": "dashboard",
+      "general_consistency": {
+        "score": 38,
+        "band": "Weak",
+        "summary": "The dashboard module is dominated by classic Ember components using @computed macros, this.get()/this.set() accessors, and didInsertElement lifecycle hooks across the majority of its component files, requiring engineers to context-switch between two mental models.",
+        "risks": [
+          "Seven component files (preparer-list.gjs, reviewer-list.gjs, tester-list.gjs, status-summary.gjs, project-counts.gjs, issue-summary.gjs, key-controls-summary.gjs) extend classic Ember.Component with @computed and this.get()/this.set(), blocking incremental migration.",
+          "dashboard/route.js uses this.get() and this.set() and calls controller.set() from setupController, propagating classic accessor patterns into the route layer."
+        ],
+        "recommendations": [
+          "Prioritize migrating tasks/preparer-list.gjs and tasks/reviewer-list.gjs to Glimmer components with @tracked properties, as these smaller files would serve as migration templates for the larger status-summary.gjs.",
+          "Refactor dashboard/route.js to remove this.get() and this.set() calls, following the pattern in risks/route.js which uses modern @service injection and native property access."
+        ]
+      },
+      "luna_consistency": {
+        "score": 52,
+        "band": "Adequate",
+        "summary": "The dashboard module imports Luna components in its list components but relies on raw div-based panel layouts, hardcoded pixel values in CSS, and Bootstrap-era class names for structural UI that Luna's Card and Panel components now own.",
+        "risks": [
+          "dashboard/panel.gjs and count-summary.gts implement custom panel and card layouts using raw div elements and Bootstrap class names (panel-heading, panel-body, col-xs-3) rather than Luna Card or Panel primitives.",
+          "panel.css contains hardcoded pixel values (padding: 15px, left: 10px) and hardcoded color references that are not semantic Luna color tokens."
+        ],
+        "recommendations": [
+          "Replace the custom panel.gjs/panel.css implementation with Luna's Card or Frame primitives as the structural shell for dashboard widgets, eliminating the Bootstrap-era heading and body div pattern.",
+          "Replace hardcoded pixel spacing in panel.css and preparer-list.css with Luna space tokens (--luna-space-base for 1rem, --luna-space-s for 0.5rem) to reduce token drift."
+        ]
+      }
+    },
+    {
+      "name": "risks",
+      "general_consistency": {
+        "score": 58,
+        "band": "Adequate",
+        "summary": "The risks module has a clear split between newer Glimmer TypeScript components and older classic Ember components (risk-details-panel.gjs, risks-tree-page.gjs, toolkit-panels/controls-panel.gjs) that use this.get()/this.set() and extend '@ember/component'.",
+        "risks": [
+          "primary/risks-tree-page.gjs extends classic Ember.Component, uses this.get() and this.set() extensively, and imports LunaTreeView from @auditboard/legacy-design-system; it is the highest-traffic entry point to the risks tree and the largest migration liability.",
+          "toolkit-panels/controls-panel.gjs uses classic Component, this.set() for isLoaded state, and lifecycle hooks incompatible with the @tracked pattern used in surrounding components."
+        ],
+        "recommendations": [
+          "Migrate risk-details-panel.gjs from classic Component to a Glimmer component, replacing the tagName pattern with the modern Component from @glimmer/component approach used in risk-page-toolkit.gjs.",
+          "Migrate toolkit-panels/controls-panel.gjs to use @tracked isLoaded = false instead of this.set('isLoaded', ...) and upgrade it to a Glimmer component."
+        ]
+      },
+      "luna_consistency": {
+        "score": 65,
+        "band": "Adequate",
+        "summary": "The risks module has strong Luna adoption in its newer components (Accordion, Badge, EmptyState, Tablist, Button, Link, XStack/YStack), but legacy-design-system imports for LunaTreeView, LunaFormGroup, and LunaModal in older files represent meaningful visual debt.",
+        "risks": [
+          "primary/risks-tree-page.gjs imports LunaTreeView from @auditboard/legacy-design-system as the primary navigation surface for the risks hierarchy, creating long-term design system fragmentation.",
+          "modals/deprecated-create-risk-mitigation-plan.gjs uses LunaFormGroup and LunaModal from @auditboard/legacy-design-system with known debt indicated by the filename but no active migration plan."
+        ],
+        "recommendations": [
+          "Replace LunaModal in deprecated-create-risk-mitigation-plan.gjs with Luna's Modal from luna/layout, following the pattern established in resource-planner/modals/base-booking.gts.",
+          "Replace LunaFormGroup instances in the deprecated modal with Luna Field + Input primitives, using risks/risk-assessments-panel.gts as a reference for the correct Luna form composition pattern."
+        ]
+      }
+    },
+    {
+      "name": "owner-dashboard",
+      "general_consistency": {
+        "score": 32,
+        "band": "Weak",
+        "summary": "Owner Dashboard has the highest concentration of classic Ember patterns in this set: the majority of its component surface area uses classic Ember.Component with @computed macros and this.get() accessors, despite newer additions like dashboard-nav.gjs and my-risks-page.gjs having been written as modern Glimmer.",
+        "risks": [
+          "Eight component files (tasks-overview.gjs, issues-overview.gjs, issues-list.gjs, my-controls-page.gjs, controls-overview.gjs, narratives-overview.gjs, narratives-list.gjs, status-badge.gjs) all extend classic Component with @computed and this.get().",
+          "tasks-overview.gjs uses @computed chains with this.get('taskGroups') array iteration, creating opaque dependency tracking incompatible with the @tracked/getter pattern used in dashboard-nav.gjs immediately alongside it."
+        ],
+        "recommendations": [
+          "Migrate status-badge.gjs first, as it is the smallest classic component; replacing its @computed with a getter over @tracked state would establish a migration template for the larger tasks-overview.gjs.",
+          "Migrate tasks-overview.gjs @computed properties to native getters over @tracked input following the pattern in dashboard-nav.gjs, and replace this.get('taskGroups') with direct args access."
+        ]
+      },
+      "luna_consistency": {
+        "score": 55,
+        "band": "Adequate",
+        "summary": "Owner Dashboard uses Luna Tablist, Badge, Heading, ButtonWithMenu, and Link in its navigation and task-item surfaces, but classic components hardcode hex colors for chart data and rely on legacy CSS class names rather than Luna tokens for status styling.",
+        "risks": [
+          "tasks-overview.gjs hardcodes hex colors (#E84037 for past due, #B8BFC9 for incomplete, #488FFA for upcoming, #1AC377 for finished) in chart data, duplicating Luna's color scale without referencing tokens.",
+          "my-task-group-item.gjs uses raw div elements with CSS class-based status styling (status-tag) rather than Luna's Badge component for status display, creating a visual inconsistency with how status is rendered elsewhere."
+        ],
+        "recommendations": [
+          "Replace the hardcoded hex color values in tasks-overview.gjs chartData with CSS custom property lookups or a mapping to Luna color token references (--luna-red-600, --luna-gray-400, --luna-blue-400, --luna-green-500).",
+          "Replace the custom status-tag div in my-task-group-item.gjs with Luna's Badge component configured by status, following the pattern in dashboard-nav.gjs where Badge is already correctly used."
+        ]
+      }
+    }
+  ]
+}
