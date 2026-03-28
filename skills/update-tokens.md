@@ -115,19 +115,35 @@ If `token_usages + violations == 0` (no scannable declarations found), the modul
 
 ### Modules scanned
 
-| Name | Directory |
-|------|-----------|
-| admin | `apps/client/app/components/module-admin` |
-| opsaudits | `apps/client/app/components/module-opsaudits` |
-| assessments | `apps/client/app/components/module-assessments` |
-| compliance | `apps/client/app/components/module-compliance-assessments` |
-| hubs | `apps/client/app/components/manage-hub` |
-| issues | `apps/client/app/components/module-issues` |
-| tasks | `apps/client/app/components/module-tasks` |
-| resource-planner | `apps/client/app/components/module-resource-planner` |
-| dashboard | `apps/client/app/components/module-dashboard` |
-| risks | `apps/client/app/components/module-risks` |
-| owner-dashboard | `apps/client/app/components/owner-dashboard` |
+23 user-facing modules. Each aggregates CSS across all listed directories:
+
+| Name | Directories |
+|------|-------------|
+| Dashboard (module-dashboard, owner-dashboard) | `components/module-dashboard`, `components/owner-dashboard` |
+| Controls (module-assessments, manage-hub, module-resource-planner) | `components/module-assessments`, `components/manage-hub`, `components/module-resource-planner` |
+| Risks (module-risks) | `components/module-risks` |
+| CrossComply (module-compliance-assessments) | `components/module-compliance-assessments` |
+| Issues (module-issues) | `components/module-issues` |
+| OpsAudit (module-opsaudits) | `components/module-opsaudits` |
+| WorkStream (module-tasks) | `components/module-tasks` |
+| BCM (module-bcm) | `components/module-bcm` |
+| Settings (module-admin, site-configuration) | `components/module-admin`, `components/site-configuration` |
+| ESG (module-esg) | `components/module-esg` |
+| TPRM (module-tprm) | `components/module-tprm` |
+| Narratives (module-narratives) | `components/module-narratives` |
+| RegComply (module-regulations, libraries/module-regulations) | `components/module-regulations`, `libraries/module-regulations` |
+| Exceptions (module-exceptions) | `components/module-exceptions` |
+| Integrations (module-integrations) | `components/module-integrations` |
+| Automations (module-automations) | `components/module-automations` |
+| Inventory (module-inventory) | `components/module-inventory` |
+| AI Governance (module-ai-governance) | `components/module-ai-governance` |
+| Files (files) | `components/files` |
+| Timesheets (module-timesheets) | `components/module-timesheets` |
+| Automated Security Questionnaires (module-questionnaires) | `components/module-questionnaires` |
+| ITRM / Cyber Risk (module-itrm) | `components/module-itrm` |
+| Other (shared, application-chrome) | `components/shared`, `components/application-chrome` |
+
+All paths are relative to the auditboard-frontend repo root.
 
 ---
 

@@ -29,20 +29,99 @@ The monorepo root path: `/apps/client/app/`
 
 A **module** is any top-level directory under `routes/` or the corresponding directory under `components/` that represents a user-facing feature area.
 
-Key modules (from most-changed to least):
-- admin (`routes/admin/`, `components/admin/`)
-- workspace (`routes/workspace/`, `components/workspace/`)
-- site-configuration (`routes/site-configuration/`, `components/site-configuration/`)
-- opsaudits (`routes/opsaudits/`, `components/opsaudits/`)
-- assessments (`routes/assessments/`, `components/assessments/`)
-- compliance (`routes/compliance/`, `components/compliance/`)
-- hubs (`routes/hubs/`, `components/hubs/`)
-- issues (`routes/issues/`, `components/issues/`)
-- tasks (`routes/tasks/`, `components/tasks/`)
-- resource-planner (`routes/resource-planner/`, `components/resource-planner/`)
-- dashboard (`routes/dashboard/`, `components/dashboard/`)
-- risks (`routes/risks/`, `components/risks/`)
-- owner-dashboard (`routes/owner-dashboard/`, `components/owner-dashboard/`)
+User-facing modules with their source paths (all under `apps/client/app/` unless noted):
+
+- **Dashboard (module-dashboard, owner-dashboard)**
+  routes: `routes/dashboard/`, `routes/owner-dashboard/`
+  components: `components/module-dashboard/`, `components/owner-dashboard/`
+
+- **Controls (module-assessments, manage-hub, module-resource-planner)**
+  routes: `routes/assessments/`, `routes/hubs/`, `routes/resource-planner/`
+  components: `components/module-assessments/`, `components/manage-hub/`, `components/module-resource-planner/`
+
+- **Risks (module-risks)**
+  routes: `routes/risks/`
+  components: `components/module-risks/`
+
+- **CrossComply (module-compliance-assessments)**
+  routes: `routes/compliance/`
+  components: `components/module-compliance-assessments/`
+
+- **Issues (module-issues)**
+  routes: `routes/issues/`
+  components: `components/module-issues/`
+
+- **OpsAudit (module-opsaudits)**
+  routes: `routes/opsaudits/`
+  components: `components/module-opsaudits/`
+
+- **WorkStream (module-tasks)**
+  routes: `routes/tasks/`
+  components: `components/module-tasks/`
+
+- **BCM (module-bcm)**
+  routes: `routes/workspace/bcm/`
+  components: `components/module-bcm/`
+
+- **Settings (module-admin, site-configuration)**
+  routes: `routes/admin/`, `routes/site-configuration/`
+  components: `components/module-admin/`, `components/site-configuration/`
+
+- **ESG (module-esg)**
+  routes: `routes/workspace/esg/`
+  components: `components/module-esg/`
+
+- **TPRM (module-tprm)**
+  routes: `routes/workspace/tprm/`
+  components: `components/module-tprm/`
+
+- **Narratives (module-narratives)**
+  routes: `routes/workspace/narratives/`
+  components: `components/module-narratives/`
+
+- **RegComply (module-regulations, libraries/module-regulations)**
+  routes: `routes/workspace/regulations/`
+  components: `components/module-regulations/`
+  library: `libraries/module-regulations/` (repo root relative)
+
+- **Exceptions (module-exceptions)**
+  routes: `routes/workspace/exceptions/`
+  components: `components/module-exceptions/`
+
+- **Integrations (module-integrations)**
+  routes: `routes/workspace/integrations/`
+  components: `components/module-integrations/`
+
+- **Automations (module-automations)**
+  routes: `routes/workspace/automations/`
+  components: `components/module-automations/`
+
+- **Inventory (module-inventory)**
+  routes: `routes/workspace/inventory/`
+  components: `components/module-inventory/`
+
+- **AI Governance (module-ai-governance)**
+  routes: `routes/workspace/ai-governance/`
+  components: `components/module-ai-governance/`
+
+- **Files (files)**
+  routes: (none)
+  components: `components/files/`
+
+- **Timesheets (module-timesheets)**
+  routes: `routes/workspace/timesheets/`
+  components: `components/module-timesheets/`
+
+- **Automated Security Questionnaires (module-questionnaires)**
+  routes: `routes/workspace/questionnaires/`
+  components: `components/module-questionnaires/`
+
+- **ITRM / Cyber Risk (module-itrm)**
+  routes: `routes/workspace/itrm/`
+  components: `components/module-itrm/`
+
+- **Other (shared, application-chrome)**
+  components: `components/shared/`, `components/application-chrome/`
 
 ### Exclusions — skip these:
 - `*.test.ts`, `*.spec.ts`, `*.stories.gjs` files

@@ -48,9 +48,10 @@ Read the `const MODULES = [...]` array from the `<script>` block in `/Users/jcar
 
 For each module, collect: `name`, `a11y`, `i18n`, `a11yRisks`, `a11yRecs`, `i18nRisks`, `i18nRecs`.
 
-The 13 a11y modules are: admin, workspace, site-configuration, opsaudits, assessments, compliance, hubs, issues, tasks, resource-planner, dashboard, risks, owner-dashboard.
+The 23 modules (matching both a11y and token sources):
+Dashboard (module-dashboard, owner-dashboard), Controls (module-assessments, manage-hub, module-resource-planner), Risks (module-risks), CrossComply (module-compliance-assessments), Issues (module-issues), OpsAudit (module-opsaudits), WorkStream (module-tasks), BCM (module-bcm), Settings (module-admin, site-configuration), ESG (module-esg), TPRM (module-tprm), Narratives (module-narratives), RegComply (module-regulations, libraries/module-regulations), Exceptions (module-exceptions), Integrations (module-integrations), Automations (module-automations), Inventory (module-inventory), AI Governance (module-ai-governance), Files (files), Timesheets (module-timesheets), Automated Security Questionnaires (module-questionnaires), ITRM / Cyber Risk (module-itrm), Other (shared, application-chrome).
 
-The 11 token modules are all of the above except workspace and site-configuration. Set `tokens: null` for those two.
+All 23 modules have both token and a11y data. Use `tokens: null` only if a module truly produced no CSS files.
 
 ### Step 2b: Extract smart forms data from auditboard-smart-forms-report.json
 
@@ -101,20 +102,33 @@ For modules with no token data, use `tokens: null`.
 For modules with no smart forms data (file absent or score is null/N/A), use `smartForms: null`.
 For modules with no consistency data (file absent or score is null/N/A), use `generalConsistency: null` and/or `lunaConsistency: null`.
 
-**Display name mapping** (slug to title case):
-- admin: Admin
-- workspace: Workspace
-- site-configuration: Site Configuration
-- opsaudits: Ops Audits
-- assessments: Assessments
-- compliance: Compliance
-- hubs: Hubs
-- issues: Issues
-- tasks: Tasks
-- resource-planner: Resource Planner
-- dashboard: Dashboard
-- risks: Risks
-- owner-dashboard: Owner Dashboard
+**Display name mapping** (name field to display label):
+The `name` field in both JSON sources is now the full user-facing label including code modules in parens. Use it directly as `display` — no transformation needed. Examples:
+- "Dashboard (module-dashboard, owner-dashboard)": Dashboard
+- "Controls (module-assessments, manage-hub, module-resource-planner)": Controls
+- "Risks (module-risks)": Risks
+- "CrossComply (module-compliance-assessments)": CrossComply
+- "Issues (module-issues)": Issues
+- "OpsAudit (module-opsaudits)": OpsAudit
+- "WorkStream (module-tasks)": WorkStream
+- "BCM (module-bcm)": BCM
+- "Settings (module-admin, site-configuration)": Settings
+- "ESG (module-esg)": ESG
+- "TPRM (module-tprm)": TPRM
+- "Narratives (module-narratives)": Narratives
+- "RegComply (module-regulations, libraries/module-regulations)": RegComply
+- "Exceptions (module-exceptions)": Exceptions
+- "Integrations (module-integrations)": Integrations
+- "Automations (module-automations)": Automations
+- "Inventory (module-inventory)": Inventory
+- "AI Governance (module-ai-governance)": AI Governance
+- "Files (files)": Files
+- "Timesheets (module-timesheets)": Timesheets
+- "Automated Security Questionnaires (module-questionnaires)": Automated Security Questionnaires
+- "ITRM / Cyber Risk (module-itrm)": ITRM / Cyber Risk
+- "Other (shared, application-chrome)": Other
+
+Use the full string as `name` and the short label (before the first parenthesis) as `display`.
 
 ### Step 4: Update the date
 

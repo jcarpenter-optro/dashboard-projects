@@ -24,23 +24,33 @@ Run the `eval-coordinator` skill against the repo. It will:
 2. Apply `eval-accessibility.md` and `eval-i18n.md` scoring rubrics to each module
 3. Return scores, top_risks, and recommendations per module
 
-The 13 modules to evaluate, with their source paths under `/apps/client/app/`:
+The 23 user-facing modules to evaluate, with their source paths under `/apps/client/app/` (unless noted):
 
-| Module | Routes path | Components path |
+| Module | Routes path(s) | Components path(s) |
 |---|---|---|
-| admin | `routes/admin/` | `components/admin/` |
-| workspace | `routes/workspace/` | `components/workspace/` |
-| site-configuration | `routes/site-configuration/` | `components/site-configuration/` |
-| opsaudits | `routes/opsaudits/` | `components/opsaudits/` |
-| assessments | `routes/assessments/` | `components/assessments/` |
-| compliance | `routes/compliance/` | `components/compliance/` |
-| hubs | `routes/hubs/` | `components/hubs/` |
-| issues | `routes/issues/` | `components/issues/` |
-| tasks | `routes/tasks/` | `components/tasks/` |
-| resource-planner | `routes/resource-planner/` | `components/resource-planner/` |
-| dashboard | `routes/dashboard/` | `components/dashboard/` |
-| risks | `routes/risks/` | `components/risks/` |
-| owner-dashboard | `routes/owner-dashboard/` | `components/owner-dashboard/` |
+| Dashboard (module-dashboard, owner-dashboard) | `routes/dashboard/`, `routes/owner-dashboard/` | `components/module-dashboard/`, `components/owner-dashboard/` |
+| Controls (module-assessments, manage-hub, module-resource-planner) | `routes/assessments/`, `routes/hubs/`, `routes/resource-planner/` | `components/module-assessments/`, `components/manage-hub/`, `components/module-resource-planner/` |
+| Risks (module-risks) | `routes/risks/` | `components/module-risks/` |
+| CrossComply (module-compliance-assessments) | `routes/compliance/` | `components/module-compliance-assessments/` |
+| Issues (module-issues) | `routes/issues/` | `components/module-issues/` |
+| OpsAudit (module-opsaudits) | `routes/opsaudits/` | `components/module-opsaudits/` |
+| WorkStream (module-tasks) | `routes/tasks/` | `components/module-tasks/` |
+| BCM (module-bcm) | `routes/workspace/bcm/` | `components/module-bcm/` |
+| Settings (module-admin, site-configuration) | `routes/admin/`, `routes/site-configuration/` | `components/module-admin/`, `components/site-configuration/` |
+| ESG (module-esg) | `routes/workspace/esg/` | `components/module-esg/` |
+| TPRM (module-tprm) | `routes/workspace/tprm/` | `components/module-tprm/` |
+| Narratives (module-narratives) | `routes/workspace/narratives/` | `components/module-narratives/` |
+| RegComply (module-regulations, libraries/module-regulations) | `routes/workspace/regulations/` | `components/module-regulations/`, `libraries/module-regulations/` (repo root) |
+| Exceptions (module-exceptions) | `routes/workspace/exceptions/` | `components/module-exceptions/` |
+| Integrations (module-integrations) | `routes/workspace/integrations/` | `components/module-integrations/` |
+| Automations (module-automations) | `routes/workspace/automations/` | `components/module-automations/` |
+| Inventory (module-inventory) | `routes/workspace/inventory/` | `components/module-inventory/` |
+| AI Governance (module-ai-governance) | `routes/workspace/ai-governance/` | `components/module-ai-governance/` |
+| Files (files) | (none) | `components/files/` |
+| Timesheets (module-timesheets) | `routes/workspace/timesheets/` | `components/module-timesheets/` |
+| Automated Security Questionnaires (module-questionnaires) | `routes/workspace/questionnaires/` | `components/module-questionnaires/` |
+| ITRM / Cyber Risk (module-itrm) | `routes/workspace/itrm/` | `components/module-itrm/` |
+| Other (shared, application-chrome) | (none) | `components/shared/`, `components/application-chrome/` |
 
 For each module, produce:
 - `a11y`: integer score 0–100

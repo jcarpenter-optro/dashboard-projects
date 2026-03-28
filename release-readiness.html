@@ -124,6 +124,7 @@
     thead th:first-child, tbody td:first-child { min-width: 170px; white-space: nowrap; }
 
     .module-name { font-weight: var(--font-weight-semibold); color: var(--color-ink); }
+    .module-subtitle { font-size: var(--text-xs); color: var(--color-subdued); font-family: var(--font-mono); font-weight: normal; margin-top: 3px; }
 
     /* Drawer */
     .drawer-overlay { position: fixed; inset: 0; background: rgba(7,16,31,0.55); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.2s; backdrop-filter: blur(2px); }
@@ -727,7 +728,7 @@
           : '<button class="score-btn null-score" disabled>N/A</button>')
         : '<button class="score-btn null-score" disabled title="Not yet evaluated">N/A</button>') + '</td>';
       moduleRowsHtml += '<tr class="data-row">' +
-        '<td><span class="module-name">' + escHtml(m.name) + '</span></td>' +
+        '<td><span class="module-name">' + escHtml(m.display) + '</span>' + (m.name.indexOf('(') !== -1 ? '<div class="module-subtitle">' + escHtml(m.name.slice(m.name.indexOf('(')+1, -1)) + '</div>' : '') + '</td>' +
         '<td>' + scoreBtn(m.a11y, 'a11y', m.name) + '</td>' +
         '<td>' + scoreBtn(m.i18n, 'i18n', m.name) + '</td>' +
         tokCell +
@@ -1765,8 +1766,8 @@
 
       document.getElementById('drawerHeader').innerHTML =
         '<div>' +
-          '<div style="font-size:var(--text-xs);color:var(--color-subdued);margin-bottom:var(--space-xs);text-transform:uppercase;letter-spacing:0.06em;font-weight:600;">' + escHtml(m.display) + '</div>' +
-          '<div style="font-size:var(--text-l);font-weight:var(--font-weight-semibold);color:var(--color-ink);margin-bottom:var(--space-s);">' + escHtml(m.name) + '</div>' +
+          '<div style="font-size:var(--text-l);font-weight:var(--font-weight-semibold);color:var(--color-ink);margin-bottom:var(--space-xs);">' + escHtml(m.display) + '</div>' +
+          (m.name.indexOf('(') !== -1 ? '<div style="font-size:var(--text-xs);color:var(--color-subdued);font-family:var(--font-mono);margin-bottom:var(--space-s);">' + escHtml(m.name.slice(m.name.indexOf('(')+1, -1)) + '</div>' : '<div style="margin-bottom:var(--space-s);"></div>') +
           '<div style="display:flex;gap:var(--space-s);flex-wrap:wrap;">' +
             (scoreVal !== null ? '<span class="badge ' + badgeClass + '">' + scoreDisplay + '</span>' : '') +
             (gradeDisplay ? '<span class="badge ' + badgeClass + '">Grade ' + gradeDisplay + '</span>' : '') +

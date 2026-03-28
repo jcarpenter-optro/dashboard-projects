@@ -11,7 +11,7 @@ import os, re, sys, json
 from datetime import datetime
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).parent.parent
+REPO_ROOT = Path.cwd()
 
 TOKEN_FILES = {
     "color":      REPO_ROOT / "libraries/luna-tokens/package/src/styles/color.css",
@@ -22,17 +22,81 @@ TOKEN_FILES = {
 }
 
 MODULES = [
-    {"name": "admin",            "dir": "apps/client/app/components/module-admin",                 "description": "Admin panel"},
-    {"name": "opsaudits",        "dir": "apps/client/app/components/module-opsaudits",              "description": "Operational audits"},
-    {"name": "assessments",      "dir": "apps/client/app/components/module-assessments",            "description": "Assessments"},
-    {"name": "compliance",       "dir": "apps/client/app/components/module-compliance-assessments", "description": "Compliance management"},
-    {"name": "hubs",             "dir": "apps/client/app/components/manage-hub",                    "description": "Hubs"},
-    {"name": "issues",           "dir": "apps/client/app/components/module-issues",                 "description": "Issue tracking"},
-    {"name": "tasks",            "dir": "apps/client/app/components/module-tasks",                  "description": "Task management"},
-    {"name": "resource-planner", "dir": "apps/client/app/components/module-resource-planner",       "description": "Resource planning"},
-    {"name": "dashboard",        "dir": "apps/client/app/components/module-dashboard",              "description": "Dashboards"},
-    {"name": "risks",            "dir": "apps/client/app/components/module-risks",                  "description": "Risk management"},
-    {"name": "owner-dashboard",  "dir": "apps/client/app/components/owner-dashboard",               "description": "Owner dashboard"},
+    {"name": "Dashboard (module-dashboard, owner-dashboard)",
+     "dirs": ["apps/client/app/components/module-dashboard",
+              "apps/client/app/components/owner-dashboard"],
+     "description": ""},
+    {"name": "Controls (module-assessments, manage-hub, module-resource-planner)",
+     "dirs": ["apps/client/app/components/module-assessments",
+              "apps/client/app/components/manage-hub",
+              "apps/client/app/components/module-resource-planner"],
+     "description": ""},
+    {"name": "Risks (module-risks)",
+     "dirs": ["apps/client/app/components/module-risks"],
+     "description": ""},
+    {"name": "CrossComply (module-compliance-assessments)",
+     "dirs": ["apps/client/app/components/module-compliance-assessments"],
+     "description": ""},
+    {"name": "Issues (module-issues)",
+     "dirs": ["apps/client/app/components/module-issues"],
+     "description": ""},
+    {"name": "OpsAudit (module-opsaudits)",
+     "dirs": ["apps/client/app/components/module-opsaudits"],
+     "description": ""},
+    {"name": "WorkStream (module-tasks)",
+     "dirs": ["apps/client/app/components/module-tasks"],
+     "description": ""},
+    {"name": "BCM (module-bcm)",
+     "dirs": ["apps/client/app/components/module-bcm"],
+     "description": ""},
+    {"name": "Settings (module-admin, site-configuration)",
+     "dirs": ["apps/client/app/components/module-admin",
+              "apps/client/app/components/site-configuration"],
+     "description": ""},
+    {"name": "ESG (module-esg)",
+     "dirs": ["apps/client/app/components/module-esg"],
+     "description": ""},
+    {"name": "TPRM (module-tprm)",
+     "dirs": ["apps/client/app/components/module-tprm"],
+     "description": ""},
+    {"name": "Narratives (module-narratives)",
+     "dirs": ["apps/client/app/components/module-narratives"],
+     "description": ""},
+    {"name": "RegComply (module-regulations, libraries/module-regulations)",
+     "dirs": ["apps/client/app/components/module-regulations",
+              "libraries/module-regulations"],
+     "description": ""},
+    {"name": "Exceptions (module-exceptions)",
+     "dirs": ["apps/client/app/components/module-exceptions"],
+     "description": ""},
+    {"name": "Integrations (module-integrations)",
+     "dirs": ["apps/client/app/components/module-integrations"],
+     "description": ""},
+    {"name": "Automations (module-automations)",
+     "dirs": ["apps/client/app/components/module-automations"],
+     "description": ""},
+    {"name": "Inventory (module-inventory)",
+     "dirs": ["apps/client/app/components/module-inventory"],
+     "description": ""},
+    {"name": "AI Governance (module-ai-governance)",
+     "dirs": ["apps/client/app/components/module-ai-governance"],
+     "description": ""},
+    {"name": "Files (files)",
+     "dirs": ["apps/client/app/components/files"],
+     "description": ""},
+    {"name": "Timesheets (module-timesheets)",
+     "dirs": ["apps/client/app/components/module-timesheets"],
+     "description": ""},
+    {"name": "Automated Security Questionnaires (module-questionnaires)",
+     "dirs": ["apps/client/app/components/module-questionnaires"],
+     "description": ""},
+    {"name": "ITRM / Cyber Risk (module-itrm)",
+     "dirs": ["apps/client/app/components/module-itrm"],
+     "description": ""},
+    {"name": "Other (shared, application-chrome)",
+     "dirs": ["apps/client/app/components/shared",
+              "apps/client/app/components/application-chrome"],
+     "description": ""},
 ]
 
 # Properties scanned per category — keeps detection context-aware
@@ -183,8 +247,9 @@ def find_css_files(directory):
     return [p for p in d.rglob("*") if p.suffix in (".css", ".scss") and p.is_file()]
 
 def scan_module(mod, maps):
-    full_dir = REPO_ROOT / mod["dir"]
-    css_files = find_css_files(full_dir)
+    css_files = []
+    for d in mod["dirs"]:
+        css_files.extend(find_css_files(REPO_ROOT / d))
 
     by_cat = {"color": 0, "space": 0, "radius": 0, "typography": 0}
     token_usages = violations = 0
@@ -217,7 +282,7 @@ def scan_module(mod, maps):
         "by_cat":       by_cat,
         "score":        score,
         "grade":        grade,
-        "exists":       full_dir.exists(),
+        "exists":       any((REPO_ROOT / d).exists() for d in mod["dirs"]),
         "top_files":    top_files[:8],
     }
 
@@ -295,6 +360,8 @@ def generate_html(results, maps):
         score_band = "good" if mod["score"] >= 80 else "fair" if mod["score"] >= 50 else "poor"
         scannable  = mod["violations"] + mod["token_usages"]
         mod_name_js = mod["name"].replace("'", "\\'")
+        display_name = mod["name"].split(" (")[0]
+        subtitle = mod["name"][mod["name"].index("(")+1:-1] if "(" in mod["name"] else ""
         if scannable == 0:
             score_cell = '<span class="text-subdued text-xs">No scannable CSS</span>'
         else:
@@ -308,8 +375,8 @@ def generate_html(results, maps):
     <tr data-score="{score_band}" onclick="openDrawer('{mod_name_js}')" style="cursor:pointer;">
       <td class="numeric text-subdued text-xs">{i+1}</td>
       <td>
-        <div style="font-weight:var(--font-weight-semibold);color:var(--color-ink);">{mod["name"]}</div>
-        <div class="text-xs text-subdued" style="margin-top:2px;">{mod["description"]}</div>
+        <div style="font-weight:var(--font-weight-semibold);color:var(--color-ink);">{display_name}</div>
+        <div style="margin-top:3px;font-size:var(--text-xs);color:var(--color-subdued);font-family:var(--font-mono);font-weight:normal;">{subtitle}</div>
       </td>
       <td class="numeric text-xs text-subdued">{mod["css_files"]}</td>
       <td class="numeric"><span class="text-number" style="color:var(--color-danger);font-weight:var(--font-weight-semibold);">{mod["violations"]:,}</span></td>
@@ -329,7 +396,7 @@ def generate_html(results, maps):
   <title>Luna Token Adoption: Module Scores</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;600&family=Roboto+Mono:wght@400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Figtree:wght@300;400;500;600&family=Roboto+Mono:wght@400&display=swap" rel="stylesheet">
   <style>
     /* Vibe design tokens */
     :root {{
@@ -352,7 +419,8 @@ def generate_html(results, maps):
       --color-light-shade: #E3E8F2;
       --color-lightest-shade: #F5F7FA;
       --color-empty-shade: #FFFFFF;
-      --font-body: 'Inter', BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+      --font-heading: 'Poppins', Roboto, sans-serif;
+      --font-body: 'Figtree', Roboto, sans-serif;
       --font-mono: 'Roboto Mono', Menlo, Courier, monospace;
       --font-weight-light: 300;
       --font-weight-regular: 400;
@@ -390,7 +458,7 @@ def generate_html(results, maps):
     }}
     *, *::before, *::after {{ box-sizing: border-box; margin: 0; padding: 0; }}
     body {{ font-family: var(--font-body); font-size: var(--text-s); font-weight: var(--font-weight-regular); line-height: var(--line-height-s); color: var(--color-paragraph); background: var(--color-lightest-shade); -webkit-font-smoothing: antialiased; }}
-    h1, h2, h3, h4, h5, h6 {{ font-family: var(--font-body); color: var(--color-ink); line-height: var(--line-height-m); }}
+    h1, h2, h3, h4, h5, h6 {{ font-family: var(--font-heading); color: var(--color-ink); line-height: var(--line-height-m); }}
     h1 {{ font-size: var(--text-xxl); font-weight: var(--font-weight-semibold); }}
     h4 {{ font-size: var(--text-m);   font-weight: var(--font-weight-semibold); }}
     h6 {{ font-size: var(--text-xs);  font-weight: var(--font-weight-semibold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-subdued); }}
@@ -617,10 +685,12 @@ def generate_html(results, maps):
       var badgeClass = mod.score >= 80 ? 'badge--success' : mod.score >= 50 ? 'badge--warning' : 'badge--danger';
       var gradeClass = (mod.grade === 'A' || mod.grade === 'B') ? 'badge--success' : (mod.grade === 'C') ? 'badge--warning' : 'badge--danger';
 
+      var drawerDispName = mod.name.split(' (')[0];
+      var drawerSubtitle = mod.name.indexOf('(') !== -1 ? mod.name.slice(mod.name.indexOf('(') + 1, -1) : '';
       document.getElementById('drawerHeader').innerHTML =
         '<div>' +
-        '<div style="font-size:var(--text-xs);color:var(--color-subdued);margin-bottom:var(--space-xs);text-transform:uppercase;letter-spacing:0.06em;font-weight:600;">' + mod.description + '</div>' +
-        '<div style="font-size:var(--text-l);font-weight:var(--font-weight-semibold);color:var(--color-ink);margin-bottom:var(--space-s);">' + mod.name + '</div>' +
+        '<div style="font-size:var(--text-l);font-weight:var(--font-weight-semibold);color:var(--color-ink);margin-bottom:var(--space-xs);">' + drawerDispName + '</div>' +
+        (drawerSubtitle ? '<div style="font-size:var(--text-xs);color:var(--color-subdued);font-family:var(--font-mono);margin-bottom:var(--space-s);">' + drawerSubtitle + '</div>' : '<div style="margin-bottom:var(--space-s);"></div>') +
         '<div style="display:flex;gap:var(--space-s);flex-wrap:wrap;">' +
         '<span class="badge ' + badgeClass + '">' + mod.score + '%</span>' +
         '<span class="badge ' + gradeClass + '">Grade ' + mod.grade + '</span>' +
