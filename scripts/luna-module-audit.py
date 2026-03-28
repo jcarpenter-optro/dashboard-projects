@@ -735,24 +735,23 @@ def generate_html(results, maps):
       if (!m) return;
       var dispName = m.name.split(' (')[0];
       var dirs = m.dirs || [];
-      var dirsHtml = dirs.length ? '<ul class="mi-dir-list">' + dirs.map(function(d) {{ return '<li><code>' + d + '</code></li>'; }}).join('') + '</ul>' : '<p style="color:var(--color-subdued);font-size:var(--text-xs);">No directories listed.</p>';
-      var statsHtml = '<div class="mi-stat-grid">' +
-        '<div class="mi-stat"><div class="mi-stat__label">CSS Files</div><div class="mi-stat__value">' + m.css_files + '</div></div>' +
-        '<div class="mi-stat"><div class="mi-stat__label">Token Score</div><div class="mi-stat__value" style="color:' + (m.score >= 80 ? 'var(--color-success)' : m.score >= 50 ? 'var(--color-warning-text,#b45309)' : 'var(--color-danger)') + '">' + m.score + '%</div></div>' +
-        '<div class="mi-stat"><div class="mi-stat__label">Violations</div><div class="mi-stat__value" style="color:var(--color-danger)">' + m.violations + '</div></div>' +
-        '<div class="mi-stat"><div class="mi-stat__label">Token Usages</div><div class="mi-stat__value" style="color:var(--color-success)">' + m.token_usages + '</div></div>' +
-        '</div>';
-      var topFilesHtml = '';
+      var dirsHtml = dirs.length
+        ? '<ul class="mi-dir-list">' + dirs.map(function(d) {{ return '<li><code>' + d + '</code></li>'; }}).join('') + '</ul>'
+        : '<p style="color:var(--color-subdued);font-size:var(--text-xs);">No directories listed.</p>';
+      var filesHtml = '<div style="font-size:var(--text-s);padding:var(--space-s) 0;color:var(--color-ink);">' +
+        '<strong>' + m.css_files + '</strong> CSS file' + (m.css_files !== 1 ? 's' : '') + ' scanned</div>';
+      var sampleHtml = '';
       if (m.top_files && m.top_files.length) {{
-        topFilesHtml = '<div class="mi-section-label">Top Violation Files</div><ul class="mi-dir-list">' +
-          m.top_files.slice(0,5).map(function(f) {{ var short = f.path.split('/').slice(-2).join('/'); return '<li><code title="' + f.path + '">' + short + '</code> <span style="color:var(--color-danger);font-size:var(--text-xs);">' + f.violations + ' violations</span></li>'; }}).join('') +
+        sampleHtml = '<div class="mi-section-label" style="margin-top:var(--space-l);">Sample File Locations</div>' +
+          '<ul class="mi-dir-list">' +
+          m.top_files.slice(0,8).map(function(f) {{ return '<li><code>' + f.path + '</code></li>'; }}).join('') +
           '</ul>';
       }}
       document.getElementById('miContent').innerHTML =
         '<div class="mi-title">' + dispName + '</div>' +
         '<div class="mi-section-label">Code Components</div>' + dirsHtml +
-        '<div class="mi-section-label">Stats</div>' + statsHtml +
-        topFilesHtml;
+        '<div class="mi-section-label">Files</div>' + filesHtml +
+        sampleHtml;
       document.getElementById('miOverlay').classList.add('open');
       document.body.style.overflow = 'hidden';
     }}

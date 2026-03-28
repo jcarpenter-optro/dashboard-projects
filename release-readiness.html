@@ -1813,23 +1813,26 @@
       var dispName = m.display || m.name.split(' (')[0];
       var subtitle = m.name.indexOf('(') !== -1 ? m.name.slice(m.name.indexOf('(')+1, -1) : '';
       var dirs = subtitle ? subtitle.split(', ') : [];
-      var dirsHtml = dirs.length ? '<ul class="mi-dir-list">' + dirs.map(function(d) { return '<li><code>' + d + '</code></li>'; }).join('') + '</ul>' : '';
-      var stats = [];
-      if (m.a11y !== null && m.a11y !== undefined) stats.push({label:'A11y', value: m.a11y});
-      if (m.i18n !== null && m.i18n !== undefined) stats.push({label:'i18n', value: m.i18n});
-      if (m.tokens) stats.push({label:'Luna Tokens', value: m.tokens.score + '%', raw: m.tokens.score});
-      if (m.tokens) stats.push({label:'CSS Files', value: m.tokens.css_files, noColor: true});
-      if (m.smartForms && m.smartForms.score !== null) stats.push({label:'Smart Forms', value: m.smartForms.score});
-      if (m.generalConsistency && m.generalConsistency.score !== null) stats.push({label:'Gen. Consistency', value: m.generalConsistency.score});
-      if (m.lunaConsistency && m.lunaConsistency.score !== null) stats.push({label:'Luna Consistency', value: m.lunaConsistency.score});
-      var statsHtml = '<div class="mi-stat-grid">' + stats.map(function(s) {
-        var color = s.noColor ? 'var(--color-ink)' : (typeof s.raw !== 'undefined' ? (s.raw >= 80 ? 'var(--color-success)' : s.raw >= 50 ? 'var(--color-warning-text,#b45309)' : 'var(--color-danger)') : (parseInt(s.value) >= 80 ? 'var(--color-success)' : parseInt(s.value) >= 50 ? 'var(--color-warning-text,#b45309)' : 'var(--color-danger)'));
-        return '<div class="mi-stat"><div class="mi-stat__label">' + s.label + '</div><div class="mi-stat__value" style="color:' + color + '">' + s.value + '</div></div>';
-      }).join('') + '</div>';
+      var dirsHtml = dirs.length
+        ? '<ul class="mi-dir-list">' + dirs.map(function(d) { return '<li><code>' + d + '</code></li>'; }).join('') + '</ul>'
+        : '';
+      var filesHtml = '';
+      if (m.tokens) {
+        filesHtml = '<div style="font-size:var(--text-s);padding:var(--space-s) 0;color:var(--color-ink);">' +
+          '<strong>' + m.tokens.css_files + '</strong> CSS file' + (m.tokens.css_files !== 1 ? 's' : '') + ' scanned</div>';
+      }
+      var sampleHtml = '';
+      if (m.tokens && m.tokens.top_files && m.tokens.top_files.length) {
+        sampleHtml = '<div class="mi-section-label" style="margin-top:var(--space-l);">Sample File Locations</div>' +
+          '<ul class="mi-dir-list">' +
+          m.tokens.top_files.slice(0,8).map(function(f) { return '<li><code>' + f.path + '</code></li>'; }).join('') +
+          '</ul>';
+      }
       document.getElementById('miContent').innerHTML =
         '<div class="mi-title">' + dispName + '</div>' +
         '<div class="mi-section-label">Code Components</div>' + dirsHtml +
-        '<div class="mi-section-label">Stats</div>' + statsHtml;
+        (filesHtml ? '<div class="mi-section-label">Files</div>' + filesHtml : '') +
+        sampleHtml;
       document.getElementById('miOverlay').classList.add('open');
       document.body.style.overflow = 'hidden';
     }
