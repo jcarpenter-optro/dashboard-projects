@@ -152,6 +152,19 @@
     .module-name { font-weight: var(--font-weight-semibold); color: var(--color-ink); font-family: var(--font-body); font-size: var(--text-s); }
     .module-subtitle { font-size: calc(var(--text-xs) * 0.7); color: var(--color-subdued); font-family: var(--font-mono); font-weight: normal; margin-top: 3px; }
     .module-files { font-size: var(--text-xs); color: var(--color-subdued); margin-top: 2px; }
+    .mi-overlay { position: fixed; inset: 0; background: rgba(7,16,31,0.5); z-index: 200; display: none; align-items: center; justify-content: center; }
+    .mi-overlay.open { display: flex; }
+    .mi-box { background: var(--color-empty-shade); border-radius: var(--border-radius); box-shadow: var(--shadow-l, 0 8px 32px rgba(0,0,0,0.18)); padding: var(--space-xl); max-width: 540px; width: 90vw; max-height: 80vh; overflow-y: auto; position: relative; }
+    .mi-close { position: absolute; top: var(--space-m); right: var(--space-m); background: none; border: none; cursor: pointer; color: var(--color-subdued); font-size: 18px; padding: var(--space-xs); border-radius: var(--border-radius); line-height: 1; }
+    .mi-close:hover { background: var(--color-lightest-shade); color: var(--color-ink); }
+    .mi-title { font-size: var(--text-l); font-weight: var(--font-weight-semibold); color: var(--color-ink); margin-bottom: var(--space-xs); padding-right: var(--space-xl); }
+    .mi-section-label { font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-subdued); margin-bottom: var(--space-s); margin-top: var(--space-l); }
+    .mi-dir-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-xs); }
+    .mi-dir-list li code { display: inline-block; font-family: var(--font-mono); font-size: calc(var(--text-xs) * 0.85); background: var(--color-lightest-shade); border: var(--border-thin); border-radius: var(--border-radius-s, 3px); padding: 2px var(--space-s); color: var(--color-paragraph); }
+    .mi-stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: var(--space-m); margin-top: var(--space-m); }
+    .mi-stat { background: var(--color-lightest-shade); border-radius: var(--border-radius); padding: var(--space-m); }
+    .mi-stat__label { font-size: calc(var(--text-xs) * 0.85); color: var(--color-subdued); margin-bottom: var(--space-xs); }
+    .mi-stat__value { font-size: var(--text-l); font-weight: 700; color: var(--color-ink); font-variant-numeric: tabular-nums; line-height: 1; }
   </style>
 </head>
 <body>
@@ -223,6 +236,13 @@
     </div>
 
   </main>
+
+  <div class="mi-overlay" id="miOverlay" onclick="closeMI()">
+    <div class="mi-box" onclick="event.stopPropagation()">
+      <button class="mi-close" onclick="closeMI()">&#x2715;</button>
+      <div id="miContent"></div>
+    </div>
+  </div>
 
   <script>
     const MODULES = [
@@ -458,7 +478,7 @@
 
         html += `
           <tr class="data-row" data-band="${band}" onclick="toggleDetail('${m.name}')">
-            <td>
+            <td onclick="event.stopPropagation();openMI('${m.name.replace(/'/g, "\\'")}')" style="cursor:pointer;" title="View module composition">
               <div class="module-name">${m.name.split(' (')[0]}</div>
               ${m.name.indexOf('(') !== -1 ? `<div class="module-subtitle">${m.name.slice(m.name.indexOf('(')+1, -1)}</div>` : ''}
             </td>
@@ -527,6 +547,32 @@
     }
 
     renderTable();
+
+    function openMI(name) {
+      var m = MODULES.find(function(x) { return x.name === name; });
+      if (!m) return;
+      var dispName = m.name.split(' (')[0];
+      var subtitle = m.name.indexOf('(') !== -1 ? m.name.slice(m.name.indexOf('(')+1, -1) : '';
+      var dirs = subtitle ? subtitle.split(', ') : [];
+      var dirsHtml = dirs.length ? '<ul class="mi-dir-list">' + dirs.map(function(d) { return '<li><code>' + d + '</code></li>'; }).join('') + '</ul>' : '';
+      var statsHtml = '<div class="mi-stat-grid">' +
+        '<div class="mi-stat"><div class="mi-stat__label">Template Files</div><div class="mi-stat__value">' + m.files + '</div></div>' +
+        '<div class="mi-stat"><div class="mi-stat__label">A11y Score</div><div class="mi-stat__value">' + m.a11y + '</div></div>' +
+        '<div class="mi-stat"><div class="mi-stat__label">i18n Score</div><div class="mi-stat__value">' + m.i18n + '</div></div>' +
+        '</div>';
+      document.getElementById('miContent').innerHTML =
+        '<div class="mi-title">' + dispName + '</div>' +
+        '<div class="mi-section-label">Code Components</div>' + dirsHtml +
+        '<div class="mi-section-label">Stats</div>' + statsHtml;
+      document.getElementById('miOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMI() {
+      document.getElementById('miOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeMI(); });
   </script>
 
 </body>

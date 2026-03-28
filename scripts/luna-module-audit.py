@@ -352,6 +352,7 @@ def generate_html(results, maps):
         "token_usages": r["token_usages"],
         "by_cat":       r["by_cat"],
         "top_files":    r["top_files"],
+        "dirs":         r.get("dirs", []),
     } for r in results], indent=2)
 
     # Build table rows — each row is clickable
@@ -373,7 +374,7 @@ def generate_html(results, maps):
             </div>'''
         rows.append(f'''
     <tr data-score="{score_band}" onclick="openDrawer('{mod_name_js}')" style="cursor:pointer;">
-      <td>
+      <td onclick="event.stopPropagation();openMI('{mod_name_js}')" style="cursor:pointer;" title="View module composition">
         <div style="font-weight:var(--font-weight-semibold);color:var(--color-ink);">{display_name}</div>
         <div style="margin-top:3px;font-size:calc(var(--text-xs) * 0.7);color:var(--color-subdued);font-family:var(--font-mono);font-weight:normal;">{subtitle}</div>
       </td>
@@ -532,6 +533,19 @@ def generate_html(results, maps):
     .code-after  {{ color: var(--color-success); }}
     .quick-win-item {{ display: flex; align-items: center; justify-content: space-between; padding: var(--space-s) 0; border-bottom: var(--border-thin); }}
     .quick-win-item:last-child {{ border-bottom: none; }}
+    .mi-overlay {{ position: fixed; inset: 0; background: rgba(7,16,31,0.5); z-index: 200; display: none; align-items: center; justify-content: center; }}
+    .mi-overlay.open {{ display: flex; }}
+    .mi-box {{ background: var(--color-empty-shade); border-radius: var(--border-radius); box-shadow: var(--shadow-l, 0 8px 32px rgba(0,0,0,0.18)); padding: var(--space-xl); max-width: 540px; width: 90vw; max-height: 80vh; overflow-y: auto; position: relative; }}
+    .mi-close {{ position: absolute; top: var(--space-m); right: var(--space-m); background: none; border: none; cursor: pointer; color: var(--color-subdued); font-size: 18px; padding: var(--space-xs); border-radius: var(--border-radius); line-height: 1; }}
+    .mi-close:hover {{ background: var(--color-lightest-shade); color: var(--color-ink); }}
+    .mi-title {{ font-size: var(--text-l); font-weight: var(--font-weight-semibold); color: var(--color-ink); margin-bottom: var(--space-xs); padding-right: var(--space-xl); }}
+    .mi-section-label {{ font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-subdued); margin-bottom: var(--space-s); margin-top: var(--space-l); }}
+    .mi-dir-list {{ list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-xs); }}
+    .mi-dir-list li code {{ display: inline-block; font-family: var(--font-mono); font-size: calc(var(--text-xs) * 0.85); background: var(--color-lightest-shade); border: var(--border-thin); border-radius: var(--border-radius-s, 3px); padding: 2px var(--space-s); color: var(--color-paragraph); }}
+    .mi-stat-grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: var(--space-m); margin-top: var(--space-m); }}
+    .mi-stat {{ background: var(--color-lightest-shade); border-radius: var(--border-radius); padding: var(--space-m); }}
+    .mi-stat__label {{ font-size: calc(var(--text-xs) * 0.85); color: var(--color-subdued); margin-bottom: var(--space-xs); }}
+    .mi-stat__value {{ font-size: var(--text-l); font-weight: 700; color: var(--color-ink); font-variant-numeric: tabular-nums; line-height: 1; }}
   </style>
 </head>
 <body>
@@ -663,6 +677,13 @@ def generate_html(results, maps):
     <div class="drawer-body" id="drawerBody"></div>
   </div>
 
+  <div class="mi-overlay" id="miOverlay" onclick="closeMI()">
+    <div class="mi-box" onclick="event.stopPropagation()">
+      <button class="mi-close" onclick="closeMI()">&#x2715;</button>
+      <div id="miContent"></div>
+    </div>
+  </div>
+
   <script>
     var MODULE_DATA = {js_data};
 
@@ -709,8 +730,40 @@ def generate_html(results, maps):
       document.body.style.overflow = '';
     }}
 
+    function openMI(name) {{
+      var m = MODULE_DATA.find(function(x) {{ return x.name === name; }});
+      if (!m) return;
+      var dispName = m.name.split(' (')[0];
+      var dirs = m.dirs || [];
+      var dirsHtml = dirs.length ? '<ul class="mi-dir-list">' + dirs.map(function(d) {{ return '<li><code>' + d + '</code></li>'; }}).join('') + '</ul>' : '<p style="color:var(--color-subdued);font-size:var(--text-xs);">No directories listed.</p>';
+      var statsHtml = '<div class="mi-stat-grid">' +
+        '<div class="mi-stat"><div class="mi-stat__label">CSS Files</div><div class="mi-stat__value">' + m.css_files + '</div></div>' +
+        '<div class="mi-stat"><div class="mi-stat__label">Token Score</div><div class="mi-stat__value" style="color:' + (m.score >= 80 ? 'var(--color-success)' : m.score >= 50 ? 'var(--color-warning-text,#b45309)' : 'var(--color-danger)') + '">' + m.score + '%</div></div>' +
+        '<div class="mi-stat"><div class="mi-stat__label">Violations</div><div class="mi-stat__value" style="color:var(--color-danger)">' + m.violations + '</div></div>' +
+        '<div class="mi-stat"><div class="mi-stat__label">Token Usages</div><div class="mi-stat__value" style="color:var(--color-success)">' + m.token_usages + '</div></div>' +
+        '</div>';
+      var topFilesHtml = '';
+      if (m.top_files && m.top_files.length) {{
+        topFilesHtml = '<div class="mi-section-label">Top Violation Files</div><ul class="mi-dir-list">' +
+          m.top_files.slice(0,5).map(function(f) {{ var short = f.path.split('/').slice(-2).join('/'); return '<li><code title="' + f.path + '">' + short + '</code> <span style="color:var(--color-danger);font-size:var(--text-xs);">' + f.violations + ' violations</span></li>'; }}).join('') +
+          '</ul>';
+      }}
+      document.getElementById('miContent').innerHTML =
+        '<div class="mi-title">' + dispName + '</div>' +
+        '<div class="mi-section-label">Code Components</div>' + dirsHtml +
+        '<div class="mi-section-label">Stats</div>' + statsHtml +
+        topFilesHtml;
+      document.getElementById('miOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }}
+
+    function closeMI() {{
+      document.getElementById('miOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }}
+
     document.addEventListener('keydown', function(e) {{
-      if (e.key === 'Escape') closeDrawer();
+      if (e.key === 'Escape') {{ closeDrawer(); closeMI(); }}
     }});
 
     function renderDetail(mod, rank) {{
