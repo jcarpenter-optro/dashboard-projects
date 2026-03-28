@@ -373,10 +373,9 @@ def generate_html(results, maps):
             </div>'''
         rows.append(f'''
     <tr data-score="{score_band}" onclick="openDrawer('{mod_name_js}')" style="cursor:pointer;">
-      <td class="numeric text-subdued text-xs">{i+1}</td>
       <td>
         <div style="font-weight:var(--font-weight-semibold);color:var(--color-ink);">{display_name}</div>
-        <div style="margin-top:3px;font-size:var(--text-xs);color:var(--color-subdued);font-family:var(--font-mono);font-weight:normal;">{subtitle}</div>
+        <div style="margin-top:3px;font-size:calc(var(--text-xs) * 0.7);color:var(--color-subdued);font-family:var(--font-mono);font-weight:normal;">{subtitle}</div>
       </td>
       <td class="numeric text-xs text-subdued">{mod["css_files"]}</td>
       <td class="numeric"><span class="text-number" style="color:var(--color-danger);font-weight:var(--font-weight-semibold);">{mod["violations"]:,}</span></td>
@@ -640,7 +639,6 @@ def generate_html(results, maps):
         <table>
           <thead>
             <tr>
-              <th class="numeric" style="width:36px;">#</th>
               <th>Module</th>
               <th class="numeric">CSS Files</th>
               <th class="numeric">Violations</th>
@@ -690,7 +688,7 @@ def generate_html(results, maps):
       document.getElementById('drawerHeader').innerHTML =
         '<div>' +
         '<div style="font-size:var(--text-l);font-weight:var(--font-weight-semibold);color:var(--color-ink);margin-bottom:var(--space-xs);">' + drawerDispName + '</div>' +
-        (drawerSubtitle ? '<div style="font-size:var(--text-xs);color:var(--color-subdued);font-family:var(--font-mono);margin-bottom:var(--space-s);">' + drawerSubtitle + '</div>' : '<div style="margin-bottom:var(--space-s);"></div>') +
+        (drawerSubtitle ? '<div style="font-size:calc(var(--text-xs) * 0.7);color:var(--color-subdued);font-family:var(--font-mono);margin-bottom:var(--space-s);">' + drawerSubtitle + '</div>' : '<div style="margin-bottom:var(--space-s);"></div>') +
         '<div style="display:flex;gap:var(--space-s);flex-wrap:wrap;">' +
         '<span class="badge ' + badgeClass + '">' + mod.score + '%</span>' +
         '<span class="badge ' + gradeClass + '">Grade ' + mod.grade + '</span>' +
