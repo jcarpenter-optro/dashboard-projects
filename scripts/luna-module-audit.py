@@ -367,11 +367,6 @@ def generate_html(results, maps):
     best_note = (f'{best["css_files"]} CSS files' if best["css_files"] > 0
                  else "no standalone CSS files (styles likely in templates)")
 
-    # Serialize MODULE_ICONS for embedding in JS
-    icons_js = 'const MODULE_ICONS = {\n' + ',\n'.join(
-        f"  '{k}':'{v}'" for k, v in MODULE_ICONS.items()
-    ) + '\n};'
-
     # Serialize module data for embedding in JS (strip non-serialisable fields)
     js_data = json.dumps([{
         "name":         r["name"],
@@ -405,8 +400,8 @@ def generate_html(results, maps):
             </div>'''
         icon_svg = MODULE_ICONS.get(display_name, '')
         rows.append(f'''
-    <tr data-score="{score_band}" onclick="openDrawer('{mod_name_js}')" style="cursor:pointer;">
-      <td onclick="event.stopPropagation();openMI('{mod_name_js}')" style="cursor:pointer;" title="View module composition">
+    <tr data-score="{score_band}">
+      <td>
         <div style="display:flex;align-items:center;gap:var(--space-s);">
           <span style="width:16px;height:16px;flex-shrink:0;display:inline-flex;align-items:center;color:var(--color-primary);">{icon_svg}</span>
           <div>
@@ -570,19 +565,6 @@ def generate_html(results, maps):
     .code-after  {{ color: var(--color-success); }}
     .quick-win-item {{ display: flex; align-items: center; justify-content: space-between; padding: var(--space-s) 0; border-bottom: var(--border-thin); }}
     .quick-win-item:last-child {{ border-bottom: none; }}
-    .mi-overlay {{ position: fixed; inset: 0; background: rgba(7,16,31,0.5); z-index: 200; display: none; align-items: center; justify-content: center; }}
-    .mi-overlay.open {{ display: flex; }}
-    .mi-box {{ background: var(--color-empty-shade); border-radius: var(--border-radius); box-shadow: var(--shadow-l, 0 8px 32px rgba(0,0,0,0.18)); padding: var(--space-xl); max-width: 540px; width: 90vw; max-height: 80vh; overflow-y: auto; position: relative; }}
-    .mi-close {{ position: absolute; top: var(--space-m); right: var(--space-m); background: none; border: none; cursor: pointer; color: var(--color-subdued); font-size: 18px; padding: var(--space-xs); border-radius: var(--border-radius); line-height: 1; }}
-    .mi-close:hover {{ background: var(--color-lightest-shade); color: var(--color-ink); }}
-    .mi-title {{ font-size: var(--text-l); font-weight: var(--font-weight-semibold); color: var(--color-ink); margin-bottom: var(--space-xs); padding-right: var(--space-xl); }}
-    .mi-section-label {{ font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-subdued); margin-bottom: var(--space-s); margin-top: var(--space-l); }}
-    .mi-dir-list {{ list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-xs); }}
-    .mi-dir-list li code {{ display: inline-block; font-family: var(--font-mono); font-size: calc(var(--text-xs) * 0.85); background: var(--color-lightest-shade); border: var(--border-thin); border-radius: var(--border-radius-s, 3px); padding: 2px var(--space-s); color: var(--color-paragraph); }}
-    .mi-stat-grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: var(--space-m); margin-top: var(--space-m); }}
-    .mi-stat {{ background: var(--color-lightest-shade); border-radius: var(--border-radius); padding: var(--space-m); }}
-    .mi-stat__label {{ font-size: calc(var(--text-xs) * 0.85); color: var(--color-subdued); margin-bottom: var(--space-xs); }}
-    .mi-stat__value {{ font-size: var(--text-l); font-weight: 700; color: var(--color-ink); font-variant-numeric: tabular-nums; line-height: 1; }}
   </style>
 </head>
 <body>
@@ -714,17 +696,8 @@ def generate_html(results, maps):
     <div class="drawer-body" id="drawerBody"></div>
   </div>
 
-  <div class="mi-overlay" id="miOverlay" onclick="closeMI()">
-    <div class="mi-box" onclick="event.stopPropagation()">
-      <button class="mi-close" onclick="closeMI()">&#x2715;</button>
-      <div id="miContent"></div>
-    </div>
-  </div>
-
   <script>
     var MODULE_DATA = {js_data};
-
-    {icons_js}
 
     function filterTable(status, btn) {{
       document.querySelectorAll('.filter-btn').forEach(function(b) {{ b.classList.remove('active'); }});
@@ -769,41 +742,8 @@ def generate_html(results, maps):
       document.body.style.overflow = '';
     }}
 
-    function openMI(name) {{
-      var m = MODULE_DATA.find(function(x) {{ return x.name === name; }});
-      if (!m) return;
-      var dispName = m.name.split(' (')[0];
-      var dirs = m.dirs || [];
-      var dirsHtml = dirs.length
-        ? '<ul class="mi-dir-list">' + dirs.map(function(d) {{ return '<li><code>' + d + '</code></li>'; }}).join('') + '</ul>'
-        : '<p style="color:var(--color-subdued);font-size:var(--text-xs);">No directories listed.</p>';
-      var filesHtml = '<ul style="margin:var(--space-s) 0 0;padding-left:var(--space-l);font-size:var(--text-s);color:var(--color-ink);line-height:1.6;">' +
-        '<li><strong>' + m.css_files + '</strong> CSS / SCSS file' + (m.css_files !== 1 ? 's' : '') + ' — scanned for Luna token adoption</li>' +
-        '</ul>';
-      var sampleHtml = '';
-      if (m.top_files && m.top_files.length) {{
-        sampleHtml = '<div class="mi-section-label" style="margin-top:var(--space-l);">Sample File Locations</div>' +
-          '<ul class="mi-dir-list">' +
-          m.top_files.slice(0,8).map(function(f) {{ return '<li><code>' + f.path + '</code></li>'; }}).join('') +
-          '</ul>';
-      }}
-      var iconHtml = MODULE_ICONS[dispName] ? '<span style="width:20px;height:20px;display:inline-flex;flex-shrink:0;color:var(--color-primary);">' + MODULE_ICONS[dispName] + '</span>' : '';
-      document.getElementById('miContent').innerHTML =
-        '<div class="mi-title" style="display:flex;align-items:center;gap:var(--space-s);">' + iconHtml + dispName + '</div>' +
-        '<div class="mi-section-label">Code Components</div>' + dirsHtml +
-        '<div class="mi-section-label">Files Scanned</div>' + filesHtml +
-        sampleHtml;
-      document.getElementById('miOverlay').classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }}
-
-    function closeMI() {{
-      document.getElementById('miOverlay').classList.remove('open');
-      document.body.style.overflow = '';
-    }}
-
     document.addEventListener('keydown', function(e) {{
-      if (e.key === 'Escape') {{ closeDrawer(); closeMI(); }}
+      if (e.key === 'Escape') {{ closeDrawer(); }}
     }});
 
     function renderDetail(mod, rank) {{
