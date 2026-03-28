@@ -120,7 +120,7 @@ Some components have known name mismatches or cross-library quirks. These are ha
 ### Step 1: Verify source files are current
 
 ```bash
-cd "/Users/jcarpenter/Git Repositories/auditboard-frontend"
+cd "<auditboard-frontend>"
 git pull origin develop
 ```
 

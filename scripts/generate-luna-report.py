@@ -8,8 +8,8 @@ import os, re, html, json
 from pathlib import Path
 from datetime import datetime
 
-EMBER_BASE  = Path("/Users/jcarpenter/Git Repositories/auditboard-frontend/libraries/luna-core/package/src")
-REACT_BASE  = Path("/Users/jcarpenter/Git Repositories/auditboard-frontend/libraries/luna-react/package/src")
+EMBER_BASE  = Path.cwd() / "libraries/luna-core/package/src"
+REACT_BASE  = Path.cwd() / "libraries/luna-react/package/src"
 OUT_DIR     = Path("/tmp/luna-report")
 COMP_DIR    = OUT_DIR / "components"
 COMP_DIR.mkdir(parents=True, exist_ok=True)

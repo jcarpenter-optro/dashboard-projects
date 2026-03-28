@@ -8,7 +8,7 @@ Use this skill to re-run accessibility and i18n evaluations against the 13 audit
 
 ## Prereqs
 
-- Repo: `/Users/jcarpenter/Git Repositories/auditboard-frontend`
+- Repo: `<auditboard-frontend>`
 - Dashboard: `/Users/jcarpenter/Git Repositories/dashboard-projects/auditboard-a11y-i18n.html`
 - If `/Users/jcarpenter/Git Repositories/dashboard-projects/` is missing: `git clone https://github.com/jcarpenter-optro/dashboard-projects.git "/Users/jcarpenter/Git Repositories/dashboard-projects"`
 - Style guide: `~/.claude/skills/publish-dashboard.md`

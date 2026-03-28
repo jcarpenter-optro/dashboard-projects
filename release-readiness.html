@@ -762,7 +762,6 @@
       L.push('You are helping migrate the ' + m.name + ' module in the auditboard-frontend Ember.js app to use Luna design tokens instead of hardcoded CSS values. Make every replacement listed in the token reference below. Do not stop until every CSS/SCSS file in the module has been scanned and all matching hardcoded values have been replaced.');
       L.push('');
       L.push('REPOSITORY');
-      L.push('  Root:             /Users/jcarpenter/Git Repositories/auditboard-frontend');
       L.push('  Module source:    ' + path + '/');
       L.push('  Score to improve: ' + t.score + '% (Grade ' + letterGrade(t.score) + ')');
       L.push('');
@@ -878,7 +877,6 @@
       L.push('You are a senior accessibility engineer. Fix every accessibility violation listed below in the ' + m.display + ' module of auditboard-frontend. Make the actual code changes: do not add TODOs, comments, or placeholders. Do not stop until every required change is implemented and verified.');
       L.push('');
       L.push('REPOSITORY');
-      L.push('  Root:           /Users/jcarpenter/Git Repositories/auditboard-frontend');
       L.push('  Components:     ' + path + '/');
       L.push('  Routes:         apps/client/app/routes/' + m.name + '/  (check with Glob: may not exist)');
       L.push('  Templates:      apps/client/app/templates/' + m.name + '/  (check with Glob: may not exist)');
@@ -979,7 +977,6 @@
       L.push('You are a senior internationalization engineer. Fix every i18n issue listed below in the ' + m.display + ' module of auditboard-frontend. Make the actual code changes: do not add TODOs, comments, or placeholders. Do not stop until every required change is implemented and verified.');
       L.push('');
       L.push('REPOSITORY');
-      L.push('  Root:             /Users/jcarpenter/Git Repositories/auditboard-frontend');
       L.push('  Module source:    ' + path + '/');
       L.push('  Translation file: apps/client/app/locales/en-US.json');
       L.push('  Score to fix:     ' + m.i18n + '/100 (Grade ' + letterGrade(m.i18n) + ')');
@@ -1293,7 +1290,6 @@
       L.push('You are a senior frontend engineer specializing in AuditBoard\'s design system. Fix every Smart Forms governance violation listed below in the ' + m.display + ' module of auditboard-frontend. Make the actual code changes: do not add TODOs, comments, or placeholders. Do not stop until every violation is resolved and verified.');
       L.push('');
       L.push('REPOSITORY');
-      L.push('  Root:                /Users/jcarpenter/Git Repositories/auditboard-frontend');
       L.push('  Module components:   ' + path + '/');
       L.push('  Smart-form schemas:  apps/client/app/smart-form/' + m.name + '/  (create this directory if it does not exist)');
       L.push('  Score to fix:        ' + m.smartForms.score + '/100 (Grade ' + letterGrade(m.smartForms.score) + ')');
@@ -1449,7 +1445,6 @@
       const path = MODULE_PATHS[m.name] || 'apps/client/app/components/' + m.name;
       const L = [];
       L.push('Fix the following General Consistency violations in the ' + m.display + ' module of auditboard-frontend.');
-      L.push('Repo root: /Users/jcarpenter/Git Repositories/auditboard-frontend');
       L.push('Current score: ' + m.generalConsistency.score + '/100 (' + letterGrade(m.generalConsistency.score) + ')');
       L.push('');
       L.push('VIOLATIONS FOUND:');
@@ -1511,7 +1506,6 @@
       const path = MODULE_PATHS[m.name] || 'apps/client/app/components/' + m.name;
       const L = [];
       L.push('Fix the following Luna Design System consistency violations in the ' + m.display + ' module of auditboard-frontend.');
-      L.push('Repo root: /Users/jcarpenter/Git Repositories/auditboard-frontend');
       L.push('Current score: ' + m.lunaConsistency.score + '/100 (' + letterGrade(m.lunaConsistency.score) + ')');
       L.push('');
       L.push('LUNA STANDARDS (non-negotiable):');

@@ -30,7 +30,7 @@ Base URL: https://jcarpenter-optro.github.io/dashboard-projects/
 Pull the latest source before launching any updates:
 
 ```bash
-cd "/Users/jcarpenter/Git Repositories/auditboard-frontend"
+cd "<auditboard-frontend>"
 git pull origin develop
 ```
 

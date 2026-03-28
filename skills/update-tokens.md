@@ -12,7 +12,7 @@ Runs `/Users/jcarpenter/Git Repositories/dashboard-projects/scripts/luna-module-
 
 ## Prerequisites
 
-- **Repo root:** `/Users/jcarpenter/Git Repositories/auditboard-frontend`
+- **Repo root:** `<auditboard-frontend>`
 - **Scanner:** `/Users/jcarpenter/Git Repositories/dashboard-projects/scripts/luna-module-audit.py` (Python 3, at `/usr/bin/python3`)
 - **GitHub Pages working copy:** `/Users/jcarpenter/Git Repositories/dashboard-projects/`
 - **Live URL:** https://jcarpenter-optro.github.io/dashboard-projects/luna-module-scores.html
@@ -29,7 +29,7 @@ git clone https://github.com/jcarpenter-optro/dashboard-projects.git "/Users/jca
 ### 1. Run the scanner to JSON
 
 ```bash
-cd "/Users/jcarpenter/Git Repositories/auditboard-frontend"
+cd "<auditboard-frontend>"
 /usr/bin/python3 /Users/jcarpenter/Git Repositories/dashboard-projects/scripts/luna-module-audit.py --out /Users/jcarpenter/Git Repositories/dashboard-projects/luna-module-scores.json --format json
 ```
 
