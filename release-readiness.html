@@ -1952,6 +1952,27 @@
       var tokenLow = tokenModules.filter(function(m){return m.tokens.score < 50;});
       var insights = '';
 
+      // NPS insights
+      var npsAll = Object.entries(ENTERPRET_DATA).filter(function(kv){ return kv[1].nps !== null; });
+      var avgNPSAll = Math.round(npsAll.reduce(function(s,kv){ return s + kv[1].nps; }, 0) / npsAll.length * 10) / 10;
+      var npsCritical = npsAll.filter(function(kv){ return kv[1].nps < -75; }).sort(function(a,b){ return a[1].nps - b[1].nps; });
+      var npsBest = npsAll.filter(function(kv){ return kv[1].nps >= -50; }).sort(function(a,b){ return b[1].nps - a[1].nps; });
+      if (npsCritical.length > 0) {
+        insights += '<div class="callout callout--danger"><div class="callout__title">NPS Critical: ' + npsCritical.length + ' module' + (npsCritical.length > 1 ? 's' : '') + ' below -75</div><div class="callout__body">' + npsCritical.map(function(kv){ return kv[0] + ' (' + kv[1].nps + ')'; }).join(', ') + '. These modules have the most dissatisfied customer base and are highest priority for product investment.</div></div>';
+      }
+      insights += '<div class="callout callout--info"><div class="callout__title">Customer NPS: ' + avgNPSAll + ' average across ' + npsAll.length + ' modules</div><div class="callout__body">' + (npsBest.length > 0 ? 'Best-scoring modules: ' + npsBest.map(function(kv){ return kv[0] + ' (' + kv[1].nps + ')'; }).join(', ') + '. ' : '') + 'NPS data sourced from Enterpret. ' + (Object.values(ENTERPRET_DATA).filter(function(e){ return e.nps === null; }).length) + ' modules have no NPS data yet.</div></div>';
+
+      // Sentiment insights
+      var sentAll = Object.entries(ENTERPRET_DATA).filter(function(kv){ return kv[1].ratio !== null; });
+      var sentAngry = sentAll.filter(function(kv){ return kv[1].ratio > 3.0; }).sort(function(a,b){ return b[1].ratio - a[1].ratio; });
+      var sentPositive = sentAll.filter(function(kv){ return kv[1].ratio < 0.8; }).sort(function(a,b){ return a[1].ratio - b[1].ratio; });
+      if (sentAngry.length > 0) {
+        insights += '<div class="callout callout--danger"><div class="callout__title">Negative Sentiment: ' + sentAngry.length + ' module' + (sentAngry.length > 1 ? 's' : '') + ' with complaints outpacing praise 3:1+</div><div class="callout__body">' + sentAngry.map(function(kv){ return kv[0] + ' (' + kv[1].ratio + '\xd7)'; }).join(', ') + '. Complaint-to-praise ratio indicates significant customer friction in these areas.</div></div>';
+      }
+      if (sentPositive.length > 0) {
+        insights += '<div class="callout callout--success"><div class="callout__title">Positive Sentiment: ' + sentPositive.length + ' module' + (sentPositive.length > 1 ? 's' : '') + ' with strong praise-to-complaint ratio</div><div class="callout__body">' + sentPositive.map(function(kv){ return kv[0] + ' (' + kv[1].ratio + '\xd7)'; }).join(', ') + '. These modules are generating more praise than complaints from customers.</div></div>';
+      }
+
       if (a11yLow.length > 0) {
         insights += '<div class="callout callout--danger"><div class="callout__title">Accessibility Risk: '+a11yLow.length+' module'+(a11yLow.length>1?'s':'')+' below threshold</div><div class="callout__body">'+a11yLow.map(function(m){return m.display;}).join(', ')+' score below 65 on A11y. These modules are highest priority for accessibility remediation before release.</div></div>';
       }
