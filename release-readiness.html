@@ -2015,7 +2015,7 @@
             var da=dims[i], db=dims[j];
             var rows = combined.filter(function(m){ return m[da.key]!==null && m[db.key]!==null; });
             var r = pearsonR(rows.map(function(m){ return [m[da.key], m[db.key]]; }));
-            if (r !== null && Math.abs(r) >= 0.45) {
+            if (r !== null && Math.abs(r) >= 0.5) {
               // Determine if correlation is in a "good" or "concerning" direction
               var aGood = da.higher === 'better', bGood = db.higher === 'better';
               var concerning = (r > 0 && (!aGood || !bGood) && !(aGood && bGood)) ||
