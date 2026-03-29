@@ -2054,6 +2054,69 @@
         }
       })();
 
+      // Technical quality → customer outcomes correlation
+      (function() {
+        function pearsonR(pairs) {
+          var n = pairs.length;
+          if (n < 4) return null;
+          var sx=0, sy=0, sxy=0, sx2=0, sy2=0;
+          pairs.forEach(function(p){ sx+=p[0]; sy+=p[1]; sxy+=p[0]*p[1]; sx2+=p[0]*p[0]; sy2+=p[1]*p[1]; });
+          var num = n*sxy - sx*sy;
+          var den = Math.sqrt((n*sx2 - sx*sx) * (n*sy2 - sy*sy));
+          if (den === 0) return null;
+          return Math.round(num/den * 100) / 100;
+        }
+        var combined = MODULES.map(function(m) {
+          var e = ENTERPRET_DATA[m.display] || null;
+          return { name: m.display, a11y: m.a11y, i18n: m.i18n,
+            tokens: m.tokens ? m.tokens.score : null,
+            smartForms: (m.smartForms && m.smartForms.score !== null) ? m.smartForms.score : null,
+            nps: e ? e.nps : null, ratio: e ? e.ratio : null };
+        });
+        // Technical dims (predictor) vs customer outcome dims (target)
+        var predictors = [
+          { key:'a11y',       label:'A11y' },
+          { key:'i18n',       label:'i18n' },
+          { key:'tokens',     label:'Token Adoption' },
+          { key:'smartForms', label:'Smart Forms' }
+        ];
+        var outcomes = [
+          { key:'nps',   label:'NPS',              higherIsBetter: true  },
+          { key:'ratio', label:'Complaint Ratio',   higherIsBetter: false }
+        ];
+        var lines = [];
+        predictors.forEach(function(pred) {
+          outcomes.forEach(function(out) {
+            var rows = combined.filter(function(m){ return m[pred.key]!==null && m[out.key]!==null; });
+            var r = pearsonR(rows.map(function(m){ return [m[pred.key], m[out.key]]; }));
+            if (r === null || Math.abs(r) < 0.45) return;
+            var strength = Math.abs(r) >= 0.65 ? 'strong' : 'moderate';
+            // Is this correlation going in a "good" direction?
+            // Good: higher predictor → better outcome (higher NPS or lower ratio)
+            var good = (r > 0 && out.higherIsBetter) || (r < 0 && !out.higherIsBetter);
+            var direction = good
+              ? 'Higher ' + pred.label + ' associates with better ' + out.label
+              : 'Higher ' + pred.label + ' associates with worse ' + out.label;
+            // Top/bottom examples sorted by predictor
+            var sorted = rows.slice().sort(function(a,b){ return b[pred.key]-a[pred.key]; });
+            var hi = sorted.slice(0,3).map(function(m){ return m.name+' ('+pred.label+': '+m[pred.key]+', '+out.label+': '+m[out.key]+')'; });
+            var lo = sorted.slice(-3).map(function(m){ return m.name+' ('+pred.label+': '+m[pred.key]+', '+out.label+': '+m[out.key]+')'; });
+            lines.push({ strength: strength, good: good, r: r, n: rows.length,
+              text: direction + ' (r=' + r + ', ' + rows.length + ' modules). High '+pred.label+': ' + hi.join(', ') + '. Low '+pred.label+': ' + lo.join(', ') + '.' });
+          });
+        });
+        if (lines.length === 0) return;
+        lines.sort(function(a,b){ return Math.abs(b.r)-Math.abs(a.r); });
+        var hasGood = lines.some(function(l){ return l.good; });
+        var hasBad  = lines.some(function(l){ return !l.good; });
+        var type = hasBad ? 'warning' : 'success';
+        var title = 'Technical quality and customer outcomes: ' + lines.length + ' correlation' + (lines.length > 1 ? 's' : '') + ' found';
+        var body = lines.map(function(l){
+          return '<strong>' + (l.strength.charAt(0).toUpperCase()+l.strength.slice(1)) + ':</strong> ' + l.text;
+        }).join('<br><br>');
+        insights += '<div class="callout callout--'+type+'"><div class="callout__title">'+title+'</div><div class="callout__body">'+body+'</div></div>';
+      })();
+
       document.getElementById('insights-section').innerHTML = insights;
 
     })();
