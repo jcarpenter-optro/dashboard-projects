@@ -1960,7 +1960,6 @@
       if (npsCritical.length > 0) {
         insights += '<div class="callout callout--danger"><div class="callout__title">NPS Critical: ' + npsCritical.length + ' module' + (npsCritical.length > 1 ? 's' : '') + ' below -75</div><div class="callout__body">' + npsCritical.map(function(kv){ return kv[0] + ' (' + kv[1].nps + ')'; }).join(', ') + '. These modules have the most dissatisfied customer base and are highest priority for product investment.</div></div>';
       }
-      insights += '<div class="callout callout--info"><div class="callout__title">Customer NPS: ' + avgNPSAll + ' average across ' + npsAll.length + ' modules</div><div class="callout__body">' + (npsBest.length > 0 ? 'Best-scoring modules: ' + npsBest.map(function(kv){ return kv[0] + ' (' + kv[1].nps + ')'; }).join(', ') + '. ' : '') + 'NPS data sourced from Enterpret. ' + (Object.values(ENTERPRET_DATA).filter(function(e){ return e.nps === null; }).length) + ' modules have no NPS data yet.</div></div>';
 
       // Sentiment insights
       var sentAll = Object.entries(ENTERPRET_DATA).filter(function(kv){ return kv[1].ratio !== null; });
