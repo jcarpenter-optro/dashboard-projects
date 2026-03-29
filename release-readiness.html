@@ -1982,6 +1982,78 @@
       if (topPerf.length > 0) {
         insights += '<div class="callout callout--success"><div class="callout__title">Top Performers</div><div class="callout__body">'+topPerf.map(function(m){return m.display;}).join(', ')+' score 80+ on both A11y and i18n with strong token adoption. Use these modules as implementation references.</div></div>';
       }
+      // Cross-column correlation analysis
+      (function() {
+        function pearsonR(pairs) {
+          var n = pairs.length;
+          if (n < 4) return null;
+          var sx=0, sy=0, sxy=0, sx2=0, sy2=0;
+          pairs.forEach(function(p){ sx+=p[0]; sy+=p[1]; sxy+=p[0]*p[1]; sx2+=p[0]*p[0]; sy2+=p[1]*p[1]; });
+          var num = n*sxy - sx*sy;
+          var den = Math.sqrt((n*sx2 - sx*sx) * (n*sy2 - sy*sy));
+          if (den === 0) return null;
+          return Math.round(num/den * 100) / 100;
+        }
+        var combined = MODULES.map(function(m) {
+          var e = ENTERPRET_DATA[m.display] || null;
+          return { name: m.display, a11y: m.a11y, i18n: m.i18n,
+            tokens: m.tokens ? m.tokens.score : null,
+            smartForms: (m.smartForms && m.smartForms.score !== null) ? m.smartForms.score : null,
+            nps: e ? e.nps : null, ratio: e ? e.ratio : null };
+        });
+        var dims = [
+          { key:'a11y',       label:'A11y',        higher:'better' },
+          { key:'i18n',       label:'i18n',        higher:'better' },
+          { key:'tokens',     label:'Token Adoption', higher:'better' },
+          { key:'smartForms', label:'Smart Forms',  higher:'better' },
+          { key:'nps',        label:'NPS',          higher:'better' },
+          { key:'ratio',      label:'Complaint Ratio', higher:'worse' }
+        ];
+        var findings = [];
+        for (var i=0; i<dims.length; i++) {
+          for (var j=i+1; j<dims.length; j++) {
+            var da=dims[i], db=dims[j];
+            var rows = combined.filter(function(m){ return m[da.key]!==null && m[db.key]!==null; });
+            var r = pearsonR(rows.map(function(m){ return [m[da.key], m[db.key]]; }));
+            if (r !== null && Math.abs(r) >= 0.45) {
+              // Determine if correlation is in a "good" or "concerning" direction
+              var aGood = da.higher === 'better', bGood = db.higher === 'better';
+              var concerning = (r > 0 && (!aGood || !bGood) && !(aGood && bGood)) ||
+                               (r < 0 && ((aGood && bGood) || (!aGood && !bGood)));
+              findings.push({ a: da, b: db, r: r, n: rows.length, rows: rows, concerning: concerning });
+            }
+          }
+        }
+        findings.sort(function(a,b){ return Math.abs(b.r)-Math.abs(a.r); });
+
+        var DIRECTION_PHRASES = {
+          'pos-better-better': function(a,b){ return 'Modules with higher '+a+' scores tend to also score higher on '+b+'. These quality dimensions move together, suggesting shared development discipline drives both.'; },
+          'neg-better-better': function(a,b){ return 'Modules with higher '+a+' scores tend to score lower on '+b+' — these dimensions trade off or reflect different maturity priorities within modules.'; },
+          'pos-better-worse':  function(a,b){ return 'Modules with higher '+a+' scores tend to have a higher '+b+'. Better '+a+' does not appear to reduce customer complaints — other factors may dominate.'; },
+          'neg-better-worse':  function(a,b){ return 'Modules with higher '+a+' scores tend to have a lower '+b+'. Improving '+a+' quality appears associated with fewer customer complaints.'; },
+          'pos-worse-worse':   function(a,b){ return 'Modules with a higher '+a+' also tend to have a higher '+b+' — customer friction signals cluster together in the same modules.'; },
+          'neg-worse-better':  function(a,b){ return 'Modules with a higher '+a+' tend to score lower on '+b+'. Higher '+a+' is associated with worse '+b+' outcomes.'; }
+        };
+
+        var topN = Math.min(findings.length, 5);
+        for (var k=0; k<topN; k++) {
+          var f = findings[k];
+          var strength = Math.abs(f.r) >= 0.65 ? 'Strong' : 'Moderate';
+          var aDir = f.a.higher; var bDir = f.b.higher;
+          var phraseKey = (f.r > 0 ? 'pos' : 'neg') + '-' + aDir + '-' + bDir;
+          var phrase = DIRECTION_PHRASES[phraseKey]
+            ? DIRECTION_PHRASES[phraseKey](f.a.label, f.b.label)
+            : (f.r > 0 ? f.a.label+' and '+f.b.label+' are positively correlated.' : f.a.label+' and '+f.b.label+' are negatively correlated.');
+          // Find example modules at top and bottom of first dimension
+          var sorted = f.rows.slice().sort(function(a,b){ return b[f.a.key]-a[f.a.key]; });
+          var hi = sorted.slice(0,3).map(function(m){ return m.name+' ('+m[f.a.key]+'/'+m[f.b.key]+')'; });
+          var lo = sorted.slice(-3).map(function(m){ return m.name+' ('+m[f.a.key]+'/'+m[f.b.key]+')'; });
+          var exampleNote = ' Highest '+f.a.label+': '+hi.join(', ')+'. Lowest: '+lo.join(', ')+'.';
+          var type = f.concerning ? (Math.abs(f.r) >= 0.65 ? 'warning' : 'info') : 'info';
+          insights += '<div class="callout callout--'+type+'"><div class="callout__title">'+strength+' correlation: '+f.a.label+' \u2194 '+f.b.label+' (r='+f.r+', '+f.n+' modules)</div><div class="callout__body">'+phrase+exampleNote+'</div></div>';
+        }
+      })();
+
       document.getElementById('insights-section').innerHTML = insights;
 
     })();
