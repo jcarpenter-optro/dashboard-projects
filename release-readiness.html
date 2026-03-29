@@ -308,8 +308,9 @@
       if (!e) return '<td></td><td></td>';
       const href = e.nps !== null || e.ratio !== null ? 'enterpret/' + e.id + '.html' : null;
       // NPS cell
+      var npsBand = e.nps === null ? '' : (e.nps < 0 ? 'danger' : e.nps < 50 ? 'warning' : 'success');
       const npsHtml = e.nps !== null
-        ? '<a href="' + href + '" style="font-family:var(--font-mono);font-size:var(--text-s);font-weight:600;color:' + npsColor(e.nps) + ';text-decoration:none;white-space:nowrap;" title="Module NPS: ' + e.nps + '">' + e.nps + '</a>'
+        ? '<button class="score-btn ' + npsBand + '" onclick="window.location.href=\'' + href + '\'" title="Module NPS: ' + e.nps + '">' + e.nps + '</button>'
         : '<span style="font-size:var(--text-xs);color:var(--color-light-shade);">—</span>';
       // Sentiment cell: 5 faces, click opens enterpret page
       const activeIdx = sentimentFaceIndex(e.ratio);
@@ -812,9 +813,9 @@
         var ratioEntries = Object.values(ENTERPRET_DATA).filter(function(e){ return e.ratio !== null; });
         var avgRatio = ratioEntries.reduce(function(s,e){ return s + e.ratio; }, 0) / ratioEntries.length;
         var avgFaceIdx = sentimentFaceIndex(avgRatio);
-        var npsCell = '<td><div class="avg-score"><div class="avg-score__value" style="color:' + npsColor(avgNPS) + ';font-size:var(--text-l);">' + avgNPS + '</div>' +
+        var npsCell = '<td><div class="avg-score"><div class="avg-score__value" style="color:' + npsColor(avgNPS) + ';">' + avgNPS + '</div>' +
           '<div style="font-size:var(--text-xs);color:var(--color-subdued);font-weight:var(--font-weight-semibold);">' + npsEntries.length + ' Modules</div></div></td>';
-        var faceCell = '<td style="text-align:center;"><div class="avg-score">' + renderFace(avgFaceIdx, avgFaceIdx, null) +
+        var faceCell = '<td style="text-align:center;"><div class="avg-score" style="align-items:center;">' + renderFace(avgFaceIdx, avgFaceIdx, null) +
           '<div style="font-size:var(--text-xs);color:var(--color-subdued);font-weight:var(--font-weight-semibold);">' + ratioEntries.length + ' Modules</div></div></td>';
         return npsCell + faceCell;
       })() +
