@@ -795,7 +795,50 @@
     <!-- Card 2: Neg:Pos Ratio with proportion bar -->
     <div class="stat-card">
       <div class="stat-card__label">Neg : Pos Ratio</div>
-      <div style="font-family:var(--font-heading);font-size:2.5rem;font-weight:700;color:var(--color-danger);line-height:1;margin:var(--space-m) 0 var(--space-xs)">5.7&times;</div>
+      <div style="display:flex;align-items:center;gap:var(--space-m);margin:var(--space-m) 0 var(--space-xs)">
+        <div style="font-family:var(--font-heading);font-size:2.5rem;font-weight:700;color:var(--color-danger);line-height:1">5.7&times;</div>
+        <!-- Sentiment scale: 5.7x neg:pos → very angry (face 1 active) -->
+        <div style="display:flex;gap:5px;align-items:center">
+          <!-- Face 1: Very Angry — ACTIVE (dark red) -->
+          <svg viewBox="0 0 28 28" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="13" fill="#991b1b" fill-opacity="0.12"/>
+            <circle cx="14" cy="14" r="13" fill="none" stroke="#991b1b" stroke-width="1.5"/>
+            <path d="M 8,9.5 L 12,11.5" stroke="#991b1b" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M 16,11.5 L 20,9.5" stroke="#991b1b" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="10.5" cy="13" r="1.5" fill="#991b1b"/>
+            <circle cx="17.5" cy="13" r="1.5" fill="#991b1b"/>
+            <path d="M 8,19.5 Q 14,13.5 20,19.5" fill="none" stroke="#991b1b" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <!-- Face 2: Unhappy — inactive -->
+          <svg viewBox="0 0 28 28" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="13" fill="none" stroke="#c3c6d4" stroke-width="1.5"/>
+            <circle cx="10.5" cy="12.5" r="1.5" fill="#c3c6d4"/>
+            <circle cx="17.5" cy="12.5" r="1.5" fill="#c3c6d4"/>
+            <path d="M 9,18 Q 14,15 19,18" fill="none" stroke="#c3c6d4" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <!-- Face 3: Neutral — inactive -->
+          <svg viewBox="0 0 28 28" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="13" fill="none" stroke="#c3c6d4" stroke-width="1.5"/>
+            <circle cx="10.5" cy="12" r="1.5" fill="#c3c6d4"/>
+            <circle cx="17.5" cy="12" r="1.5" fill="#c3c6d4"/>
+            <line x1="9" y1="17" x2="19" y2="17" stroke="#c3c6d4" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <!-- Face 4: Content — inactive -->
+          <svg viewBox="0 0 28 28" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="13" fill="none" stroke="#c3c6d4" stroke-width="1.5"/>
+            <circle cx="10.5" cy="12" r="1.5" fill="#c3c6d4"/>
+            <circle cx="17.5" cy="12" r="1.5" fill="#c3c6d4"/>
+            <path d="M 9,16 Q 14,19.5 19,16" fill="none" stroke="#c3c6d4" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <!-- Face 5: Very Happy — inactive -->
+          <svg viewBox="0 0 28 28" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="13" fill="none" stroke="#c3c6d4" stroke-width="1.5"/>
+            <path d="M 9,12.5 Q 10.5,10.5 12,12.5" fill="none" stroke="#c3c6d4" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M 16,12.5 Q 17.5,10.5 19,12.5" fill="none" stroke="#c3c6d4" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M 8,15 Q 14,21.5 20,15" fill="none" stroke="#c3c6d4" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
       <div class="stat-card__desc" style="margin-bottom:var(--space-m)">Complaints outpace praise 5.7 to 1</div>
       <div class="prop-bar">
         <div class="prop-bar__neg" style="width:68.9%"></div>
